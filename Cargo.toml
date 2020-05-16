@@ -1,0 +1,8 @@
+[workspace]
+members = [
+"common",
+"opuscule-server",
+"opuscule-cli-client",
+"opuscule-tui-client",
+]
+
