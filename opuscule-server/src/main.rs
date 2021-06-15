@@ -18,7 +18,7 @@ async fn main() {
         let (mut socket, _addr) = listener.accept().await.unwrap();
 
         // shunt off each new client to a new task (what ahppens if we do this witha funciton?)
-        tokio::spawn(async move {
+        let join_handle = tokio::spawn(async move {
             //handle read and write independantly
             let (reader, mut writer) = socket.split();
 
