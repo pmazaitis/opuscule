@@ -30,5 +30,3 @@ pub struct UiClients {
     new_r: Receiver<usize>,
     thread: JoinHandle<()>,
 }
-
-fn main() {}
