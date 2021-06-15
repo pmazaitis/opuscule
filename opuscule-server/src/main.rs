@@ -1,5 +1,7 @@
+// use std::io::BufRead;
+
 use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
+    io::{AsyncBufReadExt, AsyncWriteExt, BufReader},
     net::TcpListener,
 };
 
@@ -12,13 +14,24 @@ async fn main() {
     // call accept to accept new incoming connection for a stream and addr
     let (mut socket, _addr) = listener.accept().await.unwrap();
 
+    //handle read and write independantly
+    let (reader, mut writer) = socket.split();
+
+    // each client, respond to all messages
+    //a place to put the data from the socket
+    let mut reader = BufReader::new(reader);
+
+    let mut line = String::new();
+
     loop {
-        // each client, respond to all messages
-        //a place to put the data from the socket
-        let mut buffer = [0u8; 1024];
         // pull in
-        let bytes_read = socket.read(&mut buffer).await.unwrap();
+        let bytes_read = reader.read_line(&mut line).await.unwrap();
+        // Test to see if stream has ended
+        if bytes_read == 0 {
+            break;
+        }
         // send out
-        socket.write_all(&buffer[..bytes_read]).await.unwrap();
+        writer.write_all(line.as_bytes()).await.unwrap();
+        line.clear();
     }
 }
