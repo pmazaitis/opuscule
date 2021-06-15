@@ -30,3 +30,15 @@ pub struct UiClients {
     new_r: Receiver<usize>,
     thread: JoinHandle<()>,
 }
+
+impl UiClients {
+    pub fn new<A>(addr: A) -> io::Result<UiCLients>
+    where
+        A: ToSocketAddrs,
+    {
+        let listener = TcpListener::bind(&addr).await.unwrap();
+        let connections = Arc::new(Mutex::new(VecMap::new()));
+        let names = Arc::new(Mutex::new(VecMap::new()));
+        let (new_s, new_r) = channel();
+    }
+}
