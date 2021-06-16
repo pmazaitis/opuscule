@@ -30,7 +30,7 @@ async fn main() {
         let mut rx = tx.subscribe();
 
         // shunt off each new client to a new task (what ahppens if we do this witha funciton?)
-        let join_handle = tokio::spawn(async move {
+        let _join_handle = tokio::spawn(async move {
             //handle read and write independantly
             let (reader, mut writer) = socket.split();
 
@@ -54,7 +54,7 @@ async fn main() {
                     result = rx.recv() => {
                         // send out to this specific ui_client
                         let (msg, other_addr) = result.unwrap();
-
+                        println!("Sending from {:?}", other_addr);
                         if addr != other_addr {
                             writer.write_all(msg.as_bytes()).await.unwrap();
                         }
