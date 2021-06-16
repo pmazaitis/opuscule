@@ -17,12 +17,12 @@ async fn main() {
     let listener = TcpListener::bind(&ADDR).await.unwrap();
 
     // tokio broadcast channel; can we expose these?
-    let (tx, _rx) = broadcast::channel::<String>(10);
+    let (tx, _rx) = broadcast::channel(10);
 
     //We need to put accept into a loop for catching new clients
     loop {
         // call accept to accept new incoming connection for a stream and addr
-        let (mut socket, _addr) = listener.accept().await.unwrap();
+        let (mut socket, addr) = listener.accept().await.unwrap();
 
         // We need to clone this so that each clent gets one
         let tx = tx.clone();
@@ -48,13 +48,16 @@ async fn main() {
                         // Test to see if stream has ended
                         if result.unwrap() == 0 {break;}
                         // send to all clients
-                        tx.send(line.clone()).unwrap();
+                        tx.send((line.clone(), addr)).unwrap();
                         line.clear();
                     }
                     result = rx.recv() => {
                         // send out to this specific ui_client
-                        let msg = result.unwrap();
-                        writer.write_all(msg.as_bytes()).await.unwrap();
+                        let (msg, other_addr) = result.unwrap();
+
+                        if addr != other_addr {
+                            writer.write_all(msg.as_bytes()).await.unwrap();
+                        }
                     }
                 } // end tokio select
                   // pull in
