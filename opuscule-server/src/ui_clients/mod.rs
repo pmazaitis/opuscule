@@ -1,29 +1,15 @@
-#![allow(dead_code)]
-#![allow(unused)]
-
-use std::{future::Future, str::FromStr};
+// #![allow(dead_code)]
+// #![allow(unused)]
 
 use tokio::{
     io::{AsyncBufReadExt, AsyncWriteExt, BufReader},
-    net::{unix::SocketAddr, TcpListener},
+    net::TcpListener,
     sync::mpsc,
     sync::watch,
 };
 
 use mpsc::Sender;
 use watch::Receiver;
-
-// pub struct UiActor {
-//     commands: mpsc::Receiver<String>,
-//     state: watch::Sender<String>,
-// }
-
-// impl UiActor {
-//     pub async fn get_command(&self) {
-//         &self.commands.recv()
-//     }
-//     pub async fn send_state(state: String) {}
-// }
 
 pub async fn handle_ui_clients(
     addr: String,
@@ -35,7 +21,7 @@ pub async fn handle_ui_clients(
 
     // We need to loop to catch each new client as it comes in
     loop {
-        let (mut ui_socket, addr) = listener.accept().await.unwrap();
+        let (mut ui_socket, _addr) = listener.accept().await.unwrap();
 
         // clone the channels for commands and state
         let send_command = send_command.clone();
@@ -54,17 +40,16 @@ pub async fn handle_ui_clients(
                         // Test to see if stream has ended
                         if result.unwrap() == 0 {break;}
                         // send to all clients
-                        send_command.send(line.clone()).await;
+                        send_command.send(line.clone()).await.unwrap();
                         println!("Got in client loop {}", line.clone());
 
                         line.clear();
                     }
-                    // result = recd_state.borrow() => {
-                    //    // ui_client_writer.write_all(result);
-                    // }
-                    result = recd_state.changed() => {
-                        println!("got state back for the clients:{}", *recd_state.borrow());
-                        //ui_client_writer.write_all(*recd_state.borrow());
+                    _result = recd_state.changed() => {
+                        let new_state = recd_state.borrow().clone();
+                        println!("got state back for the clients:{}", &(*new_state));
+                        // ui_client_writer.write_all(&(*new_state).as_bytes());
+                        ui_client_writer.write_all(&(*new_state).as_bytes()).await.unwrap();
                     }
                 }
             }
