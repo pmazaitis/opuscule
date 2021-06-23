@@ -1,9 +1,26 @@
+use tokio::net::unix::SocketAddr;
 use tokio::{sync::mpsc, sync::watch};
 
 mod ui_clients;
 
 // We eventually want to get this from config
 const ADDR: &'static str = "127.0.0.1:8080";
+
+enum OpUICommandType {
+    Play,
+    Stop,
+    Pause,
+    Favorite(u8),
+}
+struct OpUICommand {
+    addr: SocketAddr,
+    command: OpUICommandType,
+}
+
+enum OpResult {
+    OpState,
+    OpError,
+}
 
 #[tokio::main]
 async fn main() {
