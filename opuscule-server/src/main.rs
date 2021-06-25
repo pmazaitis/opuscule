@@ -1,22 +1,29 @@
-use tokio::net::unix::SocketAddr;
+use futures::prelude::*;
+use serde::{Deserialize, Serialize};
+use std::net::SocketAddr;
 use tokio::{sync::mpsc, sync::watch};
+use tokio_serde_json::{ReadJson, WriteJson};
 
 mod ui_clients;
 
 // We eventually want to get this from config
 const ADDR: &'static str = "127.0.0.1:8080";
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(tag = "OpUICommandType")]
 enum OpUICommandType {
     Play,
     Stop,
     Pause,
-    Favorite(u8),
+    Favorite { slot: u8 },
 }
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct OpUICommand {
     addr: SocketAddr,
     command: OpUICommandType,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 enum OpResult {
     OpState,
     OpError,
@@ -36,21 +43,28 @@ async fn main() {
     tokio::spawn(ui_client_server);
 
     loop {
-        // tokio::select! {
-        //     result = ui_cmds_rx.recv() => {
-        //         // Test to see if stream has ended
-        //         // if result.unwrap() == 0 {break;}
-        //         // send to all clients
-        //         // cmds_tx.send((line.clone(), addr)).unwrap();
-        //         println!("Got in server loop {:?}", result.unwrap());
-        //         let new_state = format!("Broadcasting result: {}", result.unwrap());
+        tokio::select! {
+            result = ui_cmds_rx.recv() => {
+                // Test to see if stream has ended
+                // if result.unwrap() == 0 {break;}
+                // send to all clients
+                // cmds_tx.send((line.clone(), addr)).unwrap();
+                println!("Got in server loop {:?}", result.clone().unwrap());
+                let new_state = format!("Broadcasting result: {}", result.clone().unwrap());
+                let new_cmd_string = result.unwrap();
+                let new_cmd_str = new_cmd_string.as_str();
 
-        //         state_tx.send(new_state).unwrap();
-        //     }
-        // }
-        let result = ui_cmds_rx.recv().await.unwrap();
-        println!("Got in server loop {:?}", result);
-        state_tx.send(result).unwrap();
-        println!("State sent");
+
+                let back_in_fav: OpUICommand = serde_json::from_str(new_cmd_str).unwrap();
+
+                println!("back in {:?}", back_in_fav);
+
+                state_tx.send(new_state).unwrap();
+            }
+        }
+        // let result = ui_cmds_rx.recv().await.unwrap();
+        // println!("Got in server loop {:?}", result);
+        // state_tx.send(result).unwrap();
+        // println!("State sent");
     }
 }
