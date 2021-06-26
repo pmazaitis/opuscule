@@ -38,8 +38,6 @@ pub async fn handle_ui_clients(
             loop {
                 tokio::select! {
                     result = reader.read_line(&mut line) => {
-                        // Test to see if stream has ended
-                        //if result.unwrap() == 0 {break;}
 
                         match result {
                             Ok(res) => {
@@ -76,8 +74,7 @@ pub async fn handle_ui_clients(
                     _result = recd_state_channel.changed() => {
                         let new_state = recd_state_channel.borrow().clone();
                         debug!("got state back for the clients:{:#?}", &(*new_state));
-                        // ui_client_writer.write_all(&(*new_state).as_bytes());
-                        // ui_client_writer.write_all(&(*new_state).as_bytes()).await.unwrap();
+
                         match ui_client_writer.write_all(&(*new_state).as_bytes()).await {
                             Ok(_) => {}
                             Err(_) => {}
