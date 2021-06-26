@@ -7,7 +7,7 @@ use tokio::{sync::mpsc, sync::watch};
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
 
-mod state;
+mod audio_state;
 mod ui_clients;
 
 // We eventually want to get this from config
