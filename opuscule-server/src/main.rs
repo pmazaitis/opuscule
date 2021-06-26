@@ -52,17 +52,19 @@ async fn main() {
         tokio::select! {
             result = ui_cmds_rx.recv() => {
 
-                debug!("Command received in server loop: {:?}", result.clone().unwrap());
-                let new_state = format!("Broadcasting result: {}", result.clone().unwrap());
-                let new_cmd_string = result.unwrap();
-                let new_cmd_str = new_cmd_string.as_str();
+
+                // let new_op_status = format!("Broadcasting result: {}", result.clone().unwrap());
+                // let new_cmd_string = result.unwrap();
+                // let new_cmd_str = new_cmd_string.as_str();
 
 
-                let back_in_fav: OpUICommand = serde_json::from_str(new_cmd_str).unwrap();
+                let rec_command: OpUICommand = serde_json::from_str(result.unwrap().as_str()).unwrap();
 
-                println!("back in {:?}", back_in_fav);
+                debug!("Command received in server loop: {:?}", &rec_command);
 
-                state_tx.send(new_state).unwrap();
+                let rec_command_ser = serde_json::to_string(&rec_command).unwrap();
+
+                state_tx.send(rec_command_ser).unwrap();
             }
         }
     }
