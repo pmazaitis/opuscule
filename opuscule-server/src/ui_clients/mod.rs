@@ -1,11 +1,6 @@
-// #![allow(dead_code)]
-// #![allow(unused)]
-
-//use std::net;
-
-// use core::num::dec2flt::rawfp::encode_normal;
-
 use super::{OpUICommand, OpUICommandType};
+#[allow(unused_imports)]
+use tracing::{debug, error, info, trace, warn};
 
 use tokio::{
     io::{AsyncBufReadExt, AsyncWriteExt, BufReader},
@@ -67,7 +62,6 @@ pub async fn handle_ui_clients(
                                 let cmd: OpUICommand = OpUICommand {addr: ui_client_addr, command: cmd_type_in};
                                 let cmd_string: String = serde_json::to_string(&cmd).unwrap();
                                 send_command_channel.send(cmd_string).await.unwrap();
-                                println!("Got in client loop {}", line.clone());
                             }
                             Err(_err) => {
                                 let e_message = "Badly formed command!";
@@ -81,7 +75,7 @@ pub async fn handle_ui_clients(
                     }
                     _result = recd_state_channel.changed() => {
                         let new_state = recd_state_channel.borrow().clone();
-                        println!("got state back for the clients:{}", &(*new_state));
+                        debug!("got state back for the clients:{:#?}", &(*new_state));
                         // ui_client_writer.write_all(&(*new_state).as_bytes());
                         // ui_client_writer.write_all(&(*new_state).as_bytes()).await.unwrap();
                         match ui_client_writer.write_all(&(*new_state).as_bytes()).await {

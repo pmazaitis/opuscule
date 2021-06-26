@@ -1,8 +1,11 @@
-use futures::prelude::*;
+// use futures::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use tokio::{sync::mpsc, sync::watch};
-use tokio_serde_json::{ReadJson, WriteJson};
+// use tokio_serde_json::{ReadJson, WriteJson};
+#[allow(unused_imports)]
+use tracing::{debug, error, info, trace, warn};
+use tracing_subscriber;
 
 mod ui_clients;
 
@@ -31,7 +34,9 @@ enum OpResult {
 
 #[tokio::main]
 async fn main() {
-    // Set up channels here
+    // Tracing
+    // install global collector configured based on RUST_LOG env var.
+    tracing_subscriber::fmt::init();
 
     //Channels
     // We offer the ui_clients module the tx here, so we can get the commands it receives
@@ -45,11 +50,8 @@ async fn main() {
     loop {
         tokio::select! {
             result = ui_cmds_rx.recv() => {
-                // Test to see if stream has ended
-                // if result.unwrap() == 0 {break;}
-                // send to all clients
-                // cmds_tx.send((line.clone(), addr)).unwrap();
-                println!("Got in server loop {:?}", result.clone().unwrap());
+
+                debug!("Command received in server loop: {:?}", result.clone().unwrap());
                 let new_state = format!("Broadcasting result: {}", result.clone().unwrap());
                 let new_cmd_string = result.unwrap();
                 let new_cmd_str = new_cmd_string.as_str();
@@ -62,9 +64,5 @@ async fn main() {
                 state_tx.send(new_state).unwrap();
             }
         }
-        // let result = ui_cmds_rx.recv().await.unwrap();
-        // println!("Got in server loop {:?}", result);
-        // state_tx.send(result).unwrap();
-        // println!("State sent");
     }
 }
