@@ -44,7 +44,21 @@ pub async fn handle_ui_clients(
                 tokio::select! {
                     result = reader.read_line(&mut line) => {
                         // Test to see if stream has ended
-                        if result.unwrap() == 0 {break;}
+                        //if result.unwrap() == 0 {break;}
+
+                        match result {
+                            Ok(res) => {
+                                if res == 0 {break;}
+                            }
+                            Err(_) => {
+                                let e_message = "Badly formed command!";
+                                match ui_client_writer.write_all(e_message.as_bytes()).await {
+                                    Ok(_) => {}
+                                    Err(_) => {}
+                                }
+                            }
+                        }
+
                         // process json and send up to the server
 
                         match serde_json::from_str(&line.as_str()) {
@@ -57,7 +71,10 @@ pub async fn handle_ui_clients(
                             }
                             Err(_err) => {
                                 let e_message = "Badly formed command!";
-                                ui_client_writer.write_all(e_message.as_bytes()).await.unwrap();
+                                match ui_client_writer.write_all(e_message.as_bytes()).await {
+                                    Ok(_) => {}
+                                    Err(_) => {}
+                                }
                             }
                         }
                         line.clear();
@@ -66,7 +83,11 @@ pub async fn handle_ui_clients(
                         let new_state = recd_state_channel.borrow().clone();
                         println!("got state back for the clients:{}", &(*new_state));
                         // ui_client_writer.write_all(&(*new_state).as_bytes());
-                        ui_client_writer.write_all(&(*new_state).as_bytes()).await.unwrap();
+                        // ui_client_writer.write_all(&(*new_state).as_bytes()).await.unwrap();
+                        match ui_client_writer.write_all(&(*new_state).as_bytes()).await {
+                            Ok(_) => {}
+                            Err(_) => {}
+                        }
                     }
                 }
             }
