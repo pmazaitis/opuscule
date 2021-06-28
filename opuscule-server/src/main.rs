@@ -8,7 +8,10 @@ use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
 
 mod audio_state;
+mod command_handler;
 mod ui_clients;
+
+use command_handler::handle_command;
 
 // We eventually want to get this from config
 const ADDR: &'static str = "127.0.0.1:8080";
@@ -20,16 +23,29 @@ enum OpUICommandType {
     Stop,
     Pause,
     Favorite { slot: u8 },
+    Advance,
+    Retreat,
+    Select,
+    Escape,
+    Random { set_to: Option<bool> },
+    Repeat { set_to: Option<bool> },
+    Next,
+    Previous,
+    Louder,
+    Softer,
+    Mute { set_to: Option<bool> },
+    // Shutdownn,
+    Refresh,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct OpUICommand {
+pub struct OpUICommand {
     addr: SocketAddr,
     command: OpUICommandType,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 enum OpResult {
-    OpState,
+    OpStatus,
     OpError,
 }
 
@@ -61,6 +77,8 @@ async fn main() {
                 let rec_command: OpUICommand = serde_json::from_str(result.unwrap().as_str()).unwrap();
 
                 debug!("Command received in server loop: {:?}", &rec_command);
+
+                let rec_command = handle_command(rec_command);
 
                 let rec_command_ser = serde_json::to_string(&rec_command).unwrap();
 
