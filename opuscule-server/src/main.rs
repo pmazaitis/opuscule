@@ -34,7 +34,7 @@ enum OpUICommandType {
     Louder,
     Softer,
     Mute { set_to: Option<bool> },
-    // Shutdownn,
+    // Shutdown,
     Refresh,
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
