@@ -68,12 +68,6 @@ async fn main() {
         tokio::select! {
             result = ui_cmds_rx.recv() => {
 
-
-                // let new_op_status = format!("Broadcasting result: {}", result.clone().unwrap());
-                // let new_cmd_string = result.unwrap();
-                // let new_cmd_str = new_cmd_string.as_str();
-
-
                 let rec_command: OpUICommand = serde_json::from_str(result.unwrap().as_str()).unwrap();
 
                 debug!("Command received in server loop: {:?}", &rec_command);
