@@ -1,4 +1,4 @@
-use super::{OpUICommand, OpUICommandType};
+use crate::common::{OpUICommand, OpUICommandType};
 extern crate finny;
 
 #[allow(dead_code)]

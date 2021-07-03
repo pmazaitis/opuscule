@@ -1,16 +1,17 @@
+mod audio_state;
+mod command_handler;
+mod common;
+mod ui_clients;
+
 use audio_state::{AudioStateContext, Stopped};
 // use futures::prelude::*;
-use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
+// use serde::{Deserialize, Serialize};
+// use std::net::SocketAddr;
 use tokio::{sync::mpsc, sync::watch};
 // use tokio_serde_json::{ReadJson, WriteJson};
 #[allow(unused_imports)]
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
-
-mod audio_state;
-mod command_handler;
-mod ui_clients;
 
 extern crate finny;
 use finny::FsmFactory;
@@ -20,38 +21,33 @@ use command_handler::handle_command;
 // We eventually want to get this from config
 const ADDR: &'static str = "127.0.0.1:8080";
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(tag = "OpUICommandType")]
-enum OpUICommandType {
-    Play,
-    Stop,
-    Pause,
-    Favorite { slot: u8 },
-    Advance,
-    Retreat,
-    Select,
-    Escape,
-    Random { set_to: Option<bool> },
-    Repeat { set_to: Option<bool> },
-    Next,
-    Previous,
-    Louder,
-    Softer,
-    Mute { set_to: Option<bool> },
-    // Shutdown,
-    Refresh,
-}
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct OpUICommand {
-    addr: SocketAddr,
-    command: OpUICommandType,
-}
+// #[derive(Serialize, Deserialize, Debug, Clone)]
+// #[serde(tag = "OpUICommandType")]
+// enum OpUICommandType {
+//     Play,
+//     Stop,
+//     Pause,
+//     Favorite { slot: u8 },
+//     Advance,
+//     Retreat,
+//     Select,
+//     Escape,
+//     Random { set_to: Option<bool> },
+//     Repeat { set_to: Option<bool> },
+//     Next,
+//     Previous,
+//     Louder,
+//     Softer,
+//     Mute { set_to: Option<bool> },
+//     // Shutdown,
+//     Refresh,
+// }
 
-#[derive(Serialize, Deserialize, Debug)]
-enum OpResult {
-    OpStatus,
-    OpError,
-}
+use common::OpUICommandType;
+
+use common::OpUICommand;
+
+use common::OpResult;
 
 #[tokio::main]
 async fn main() {
