@@ -1,3 +1,4 @@
+use audio_state::{AudioStateContext, Stopped};
 // use futures::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
@@ -10,6 +11,9 @@ use tracing_subscriber;
 mod audio_state;
 mod command_handler;
 mod ui_clients;
+
+extern crate finny;
+use finny::FsmFactory;
 
 use command_handler::handle_command;
 
@@ -59,10 +63,16 @@ async fn main() {
     // We offer the ui_clients module the tx here, so we can get the commands it receives
     let (ui_cmds_tx, mut ui_cmds_rx) = mpsc::channel::<String>(10);
     // We offer the ui_clients module the rx so it can distribute state
-    let (state_tx, state_rx) = watch::channel::<String>(String::from("NOOP"));
+    let (status_tx, state_rx) = watch::channel::<String>(String::from("NOOP"));
 
     let ui_client_server = ui_clients::handle_ui_clients(String::from(ADDR), ui_cmds_tx, state_rx);
     tokio::spawn(ui_client_server);
+
+    let mut as_fsm = audio_state::AudioStateFsm::new(AudioStateContext::default()).unwrap();
+
+    as_fsm.start().unwrap();
+
+    //as_fsm.beef();
 
     loop {
         tokio::select! {
@@ -76,7 +86,7 @@ async fn main() {
 
                 let rec_command_ser = serde_json::to_string(&rec_command).unwrap();
 
-                state_tx.send(rec_command_ser).unwrap();
+                status_tx.send(rec_command_ser).unwrap();
             }
         }
     }
