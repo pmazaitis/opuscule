@@ -31,16 +31,11 @@ pub struct OpUICommand {
 
 pub enum OpInternalCommandType {
     Stop,
+    Play,
 }
 
 pub struct OpInternalCommand {
     pub command: OpInternalCommandType,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub enum OpResult {
-    OpStatus,
-    OpError,
 }
 
 pub enum OpComponent {
@@ -55,9 +50,35 @@ pub struct OpusId {
     component: OpComponent,
     id: u128, // TODO investigate ulid?
 }
+
+////// Structures for returning status
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum OpResult {
+    OpStatus,
+    OpError,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct OpStatus {
+    // 'playstate': self.current_state,
+    // 'component': self.menu.current_node.component,
+    // 'messages': self.messages.compose_data(),
+    // menu: OpStatusMenu,
+    now_playing: OpStatusNowPlaying,
+    volume: OpStatusVolume,
+    indicators: OpStatusIndicators,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct OpStatusMenu {
+    path: String, // TODO more meaningful type here?
+    items: Vec<String>,
+    cursor: u8,
+}
 // for full desciptions, see: https://id3.org/id3v2.4.0-frames
 #[derive(Serialize, Deserialize, Debug)]
-pub struct StatusMetadata {
+pub struct OpStatusNowPlaying {
     opus_aenc: Option<String>, // Audio encryption
     opus_apic: Option<String>, // Attached picture
     opus_aspi: Option<String>, // Audio seek point index
@@ -141,4 +162,20 @@ pub struct StatusMetadata {
     opus_wpay: Option<String>, // Payment
     opus_wpub: Option<String>, // Publishers official webpage
     opus_wxxx: Option<String>, // User defined URL link frame
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct OpStatusVolume {
+    level: u8,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct OpStatusIndicators {
+    power: bool,
+    play: bool,
+    pause: bool,
+    stop: bool,
+    repeat: bool,
+    shuffle: bool,
+    mute: bool,
 }
