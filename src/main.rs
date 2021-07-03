@@ -31,20 +31,21 @@ async fn main() {
     // install global collector configured based on RUST_LOG env var.
     tracing_subscriber::fmt::init();
 
+    // State machine to manage the player state
+    let mut as_fsm = audio_state::AudioStateFsm::new(AudioStateContext::default()).unwrap();
+    as_fsm.start().unwrap();
+
     //Channels
     // We offer the ui_clients module the tx here, so we can get the commands it receives
     let (ui_cmds_tx, mut ui_cmds_rx) = mpsc::channel::<String>(10);
     // We offer the ui_clients module the rx so it can distribute state
     let (status_tx, state_rx) = watch::channel::<String>(String::from("NOOP"));
 
+    // Spin up server to handle user interface clients connecting over the net
     let ui_client_server = ui_clients::handle_ui_clients(String::from(ADDR), ui_cmds_tx, state_rx);
     tokio::spawn(ui_client_server);
 
-    let mut as_fsm = audio_state::AudioStateFsm::new(AudioStateContext::default()).unwrap();
-
-    as_fsm.start().unwrap();
-
-    //as_fsm.beef();
+    // Initialize and start components
 
     loop {
         tokio::select! {
