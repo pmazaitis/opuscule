@@ -2,17 +2,6 @@ use crate::common::{OpUICommand, OpUICommandType};
 extern crate finny;
 
 #[allow(dead_code)]
-struct IndicatorsStatus {
-    power: bool,
-    play: bool,
-    pause: bool,
-    stop: bool,
-    repeat: bool,
-    shuffle: bool,
-    mute: bool,
-}
-
-#[allow(dead_code)]
 struct VolumeStatus {
     level: u8,
     muted: bool,
