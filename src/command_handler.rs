@@ -1,4 +1,7 @@
 use super::{OpUICommand, OpUICommandType};
+extern crate finny;
+
+#[allow(dead_code)]
 struct IndicatorsStatus {
     power: bool,
     play: bool,
@@ -9,11 +12,13 @@ struct IndicatorsStatus {
     mute: bool,
 }
 
+#[allow(dead_code)]
 struct VolumeStatus {
     level: u8,
     muted: bool,
 }
 
+#[allow(dead_code)]
 struct NowPlayingStatus {}
 
 pub fn handle_command(rc: OpUICommand) -> OpUICommand {
