@@ -43,6 +43,18 @@ pub enum OpResult {
     OpError,
 }
 
+pub enum OpComponent {
+    InternalTesting,
+    // Shoutcast
+    // PersonalMp3Streams
+    // Oobler
+    // ...
+}
+
+pub struct OpusId {
+    component: OpComponent,
+    id: u128, // TODO investigate ulid?
+}
 // for full desciptions, see: https://id3.org/id3v2.4.0-frames
 #[derive(Serialize, Deserialize, Debug)]
 pub struct OpusMetadata {
