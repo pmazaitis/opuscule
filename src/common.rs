@@ -57,7 +57,7 @@ pub struct OpusId {
 }
 // for full desciptions, see: https://id3.org/id3v2.4.0-frames
 #[derive(Serialize, Deserialize, Debug)]
-pub struct OpusMetadata {
+pub struct StatusMetadata {
     opus_aenc: Option<String>, // Audio encryption
     opus_apic: Option<String>, // Attached picture
     opus_aspi: Option<String>, // Audio seek point index
