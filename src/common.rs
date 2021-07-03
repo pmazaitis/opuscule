@@ -129,7 +129,7 @@ pub struct OpusMetadata {
     opus_tsse: Option<String>, // Software/Hardware and settings used for encoding
     opus_tsst: Option<String>, // Set subtitle
     opus_txxx: Option<String>, // User defined text information frame
-    opus_ufid: String,         // Unique file identifier
+    opus_ufid: Option<String>, // Unique file identifier
     opus_user: Option<String>, // Terms of use
     opus_uslt: Option<String>, // Unsynchronised lyric/text transcription
     opus_wcom: Option<String>, // Commercial information
