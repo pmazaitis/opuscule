@@ -18,36 +18,12 @@ use finny::FsmFactory;
 
 use command_handler::handle_command;
 
-// We eventually want to get this from config
-const ADDR: &'static str = "127.0.0.1:8080";
-
-// #[derive(Serialize, Deserialize, Debug, Clone)]
-// #[serde(tag = "OpUICommandType")]
-// enum OpUICommandType {
-//     Play,
-//     Stop,
-//     Pause,
-//     Favorite { slot: u8 },
-//     Advance,
-//     Retreat,
-//     Select,
-//     Escape,
-//     Random { set_to: Option<bool> },
-//     Repeat { set_to: Option<bool> },
-//     Next,
-//     Previous,
-//     Louder,
-//     Softer,
-//     Mute { set_to: Option<bool> },
-//     // Shutdown,
-//     Refresh,
-// }
-
-use common::OpUICommandType;
-
-use common::OpUICommand;
+use common::{OpUICommand, OpUICommandType};
 
 use common::OpResult;
+
+// We eventually want to get this from config
+const ADDR: &'static str = "127.0.0.1:8080";
 
 #[tokio::main]
 async fn main() {
