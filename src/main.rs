@@ -3,7 +3,7 @@ mod command_handler;
 mod common;
 mod ui_clients;
 
-use audio_state::{AudioStateContext, Stopped};
+//use audio_state::{AudioStateContext, RequestPlay, Stopped};
 // use futures::prelude::*;
 // use serde::{Deserialize, Serialize};
 // use std::net::SocketAddr;
@@ -12,9 +12,6 @@ use tokio::{sync::mpsc, sync::watch};
 #[allow(unused_imports)]
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
-
-extern crate finny;
-use finny::FsmFactory;
 
 use command_handler::handle_command;
 
@@ -32,8 +29,6 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     // State machine to manage the player state
-    let mut as_fsm = audio_state::AudioStateFsm::new(AudioStateContext::default()).unwrap();
-    as_fsm.start().unwrap();
 
     //Channels
     // We offer the ui_clients module the tx here, so we can get the commands it receives
@@ -51,15 +46,15 @@ async fn main() {
         tokio::select! {
             result = ui_cmds_rx.recv() => {
 
-                let rec_command: OpUICommand = serde_json::from_str(result.unwrap().as_str()).unwrap();
+                let rec_command = serde_json::from_str(result.unwrap().as_str()).unwrap();
 
-                debug!("Command received in server loop: {:?}", &rec_command);
+                debug!("UI client command received in server loop: {:?}", &rec_command);
 
-                let rec_command = handle_command(rec_command);
+                let new_status = handle_command(rec_command);
 
-                let rec_command_ser = serde_json::to_string(&rec_command).unwrap();
+                let new_status_ser = serde_json::to_string(&new_status).unwrap();
 
-                status_tx.send(rec_command_ser).unwrap();
+                status_tx.send(new_status_ser).unwrap();
             }
         }
     }

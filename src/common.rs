@@ -64,7 +64,7 @@ struct OpStatus {
     // 'playstate': self.current_state,
     // 'component': self.menu.current_node.component,
     // 'messages': self.messages.compose_data(),
-    // menu: OpStatusMenu,
+    menu: OpStatusMenu,
     now_playing: OpStatusNowPlaying,
     volume: OpStatusVolume,
     indicators: OpStatusIndicators,

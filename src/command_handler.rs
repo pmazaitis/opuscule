@@ -1,14 +1,4 @@
 use crate::common::{OpUICommand, OpUICommandType};
-extern crate finny;
-
-#[allow(dead_code)]
-struct VolumeStatus {
-    level: u8,
-    muted: bool,
-}
-
-#[allow(dead_code)]
-struct NowPlayingStatus {}
 
 pub fn handle_command(rc: OpUICommand) -> OpUICommand {
     match rc.command {
