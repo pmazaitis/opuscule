@@ -1,6 +1,7 @@
 mod audio_state;
 mod command_handler;
 mod common;
+mod controller;
 mod ui_clients;
 
 //use audio_state::{AudioStateContext, RequestPlay, Stopped};
