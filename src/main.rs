@@ -18,6 +18,7 @@ use command_handler::handle_command;
 
 use common::{OpUICommand, OpUICommandType};
 
+#[allow(unused_imports)]
 use common::OpResult;
 
 // We eventually want to get this from config
