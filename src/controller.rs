@@ -22,9 +22,13 @@ transitions!(AudioState,
   [
     (Playing, RequestPause) => [Paused, Stopped],
     (Playing, RequestStop) => Stopped,
+    (Playing, RequestPlay) => Playing,
     (Paused, RequestPlay) => Playing,
     (Paused, RequestStop) => Stopped,
-    (Stopped, RequestPlay) => Playing
+    (Paused, RequestPause) => Paused,
+    (Stopped, RequestPlay) => Playing,
+    (Stopped, RequestStop) => Stopped,
+    (Stopped, RequestPause) => Stopped
   ]
 );
 
@@ -42,6 +46,10 @@ impl Playing {
         println!("State moving to Stopped inside the machine");
         Stopped {}
     }
+    pub fn on_request_play(self, _: RequestPlay) -> Playing {
+        println!("Maintaining Playing inside the machine");
+        Playing {}
+    }
 }
 
 impl Paused {
@@ -53,12 +61,24 @@ impl Paused {
         println!("State moving to Stopped inside the machine");
         Stopped {}
     }
+    pub fn on_request_pause(self, _: RequestPause) -> Paused {
+        println!("Maintaining Paused inside the machine");
+        Paused {}
+    }
 }
 
 impl Stopped {
     pub fn on_request_play(self, _: RequestPlay) -> Playing {
         println!("State moving to Playing inside the machine");
         Playing {}
+    }
+    pub fn on_request_stop(self, _: RequestStop) -> Stopped {
+        println!("Maintaining Stopped inside the machine");
+        Stopped {}
+    }
+    pub fn on_request_pause(self, _: RequestPause) -> Stopped {
+        println!("Maintaining Stopped inside the machine");
+        Stopped {}
     }
 }
 
