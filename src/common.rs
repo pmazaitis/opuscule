@@ -1,3 +1,4 @@
+#![allow(dead_code)] // FIXME remove when done working through the data structures
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
