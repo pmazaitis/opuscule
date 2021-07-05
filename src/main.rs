@@ -5,13 +5,8 @@ mod ui_clients;
 #[macro_use]
 extern crate machine;
 
-//use audio_state::{AudioStateContext, RequestPlay, Stopped};
-// use futures::prelude::*;
-// use serde::{Deserialize, Serialize};
-// use std::net::SocketAddr;
 use tokio::{sync::mpsc, sync::watch};
-// use tokio_serde_json::{ReadJson, WriteJson};
-#[allow(unused_imports)]
+#[allow(unused_imports)] // FIXME remove this when we know what tracing options we need
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
 
@@ -48,7 +43,7 @@ async fn main() -> ! {
 
     // Initialize and start components
 
-    // audio_state.on_request_play(RequestPlay {});
+    // Main loop
 
     loop {
         tokio::select! {
@@ -67,4 +62,3 @@ async fn main() -> ! {
         }
     }
 }
-
