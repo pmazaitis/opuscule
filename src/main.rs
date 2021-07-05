@@ -1,5 +1,3 @@
-
-
 mod common;
 mod controller;
 mod ui_clients;
@@ -18,8 +16,6 @@ use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
 
 use controller::Controller;
-
-use controller::{RequestPlay, Stopped};
 
 use common::{OpUICommand, OpUICommandType};
 
@@ -72,60 +68,3 @@ async fn main() -> ! {
     }
 }
 
-// mod controller {
-// machine!(
-//     #[derive(Clone, Debug, PartialEq)]
-//     enum AudioState {
-//         Playing,
-//         Paused,
-//         Stopped,
-//     }
-// );
-
-// #[derive(Clone, Debug, PartialEq)]
-// pub struct RequestStop;
-
-// #[derive(Clone, Debug, PartialEq)]
-// pub struct RequestPause;
-
-// #[derive(Clone, Debug, PartialEq)]
-// pub struct RequestPlay;
-
-// transitions!(AudioState,
-//   [
-//     (Playing, RequestPause) => [Paused, Stopped],
-//     (Playing, RequestStop) => Stopped,
-//     (Paused, RequestPlay) => Playing,
-//     (Paused, RequestStop) => Stopped,
-//     (Stopped, RequestPlay) => Playing
-//   ]
-// );
-
-// impl Playing {
-//     pub fn on_request_pause(self, _: RequestPause) -> AudioState {
-//         if true {
-//             AudioState::paused()
-//         } else {
-//             AudioState::stopped()
-//         }
-//     }
-//     pub fn on_request_stop(self, _: RequestStop) -> Stopped {
-//         Stopped {}
-//     }
-// }
-
-// impl Paused {
-//     pub fn on_request_play(self, _: RequestPlay) -> Playing {
-//         Playing {}
-//     }
-//     pub fn on_request_stop(self, _: RequestStop) -> Stopped {
-//         Stopped {}
-//     }
-// }
-
-// impl Stopped {
-//     pub fn on_request_play(self, _: RequestPlay) -> Playing {
-//         Playing {}
-//     }
-// }
-// }
