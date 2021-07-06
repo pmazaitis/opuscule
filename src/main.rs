@@ -2,6 +2,17 @@ mod common;
 mod controller;
 mod ui_clients;
 
+use justconfig::item::ValueExtractor;
+use justconfig::processors::{Explode, Trim};
+use justconfig::sources::defaults::Defaults;
+use justconfig::sources::env::Env;
+use justconfig::sources::text::ConfigText;
+use justconfig::validators::Range;
+use justconfig::ConfPath;
+use justconfig::Config;
+use std::ffi::OsStr;
+use std::fs::File;
+
 #[macro_use]
 extern crate machine;
 
@@ -18,7 +29,7 @@ use common::{OpUICommand, OpUICommandType};
 use common::OpResult;
 
 // We eventually want to get this from config
-const ADDR: &'static str = "127.0.0.1:8080";
+//const ADDR: &'static str = "127.0.0.1:8080";
 
 #[tokio::main]
 async fn main() -> ! {
@@ -26,9 +37,22 @@ async fn main() -> ! {
     // install global collector configured based on RUST_LOG env var.
     tracing_subscriber::fmt::init();
 
-    // State machine to manage the player state
-    // let audio_state = controller::AudioState::Stopped(Stopped {});
+    // pull in settings
+    let mut settings = Config::default();
 
+    let file = File::open("opuscule_settings.conf").expect("Could not open config file.");
+    let settings_file = ConfigText::new(file, "opuscule_settings.conf").unwrap();
+    settings.add_source(settings_file);
+
+    let server_addr: String = settings
+        .get(settings.root().push("server").push("address"))
+        .trim()
+        .value()
+        .expect("Could not get the server addr from the conf file");
+
+    println!("Server addr from config file: {:?}", &server_addr);
+
+    // State machine to manage the player state
     let mut con = Controller::new();
 
     //Channels
@@ -38,7 +62,7 @@ async fn main() -> ! {
     let (status_tx, state_rx) = watch::channel::<String>(String::from("NOOP"));
 
     // Spin up server to handle user interface clients connecting over the net
-    let ui_client_server = ui_clients::handle_ui_clients(String::from(ADDR), ui_cmds_tx, state_rx);
+    let ui_client_server = ui_clients::handle_ui_clients(server_addr, ui_cmds_tx, state_rx);
     tokio::spawn(ui_client_server);
 
     // Initialize and start components
