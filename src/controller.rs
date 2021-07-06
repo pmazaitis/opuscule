@@ -1,3 +1,6 @@
+#[allow(unused_imports)] // FIXME remove this when we know what tracing options we need
+use tracing::{debug, error, info, trace, warn};
+
 use crate::common::{OpUICommand, OpUICommandType};
 
 machine!(
@@ -36,10 +39,10 @@ impl Playing {
     pub fn on_request_pause(self, _: RequestPause) -> AudioState {
         // FIXME - test if current Opus is pausable to determine how this branches
         if true {
-            println!("State moving to Paused inside the machine");
+            debug!("State moving to Paused inside the machine");
             AudioState::paused()
         } else {
-            println!("State moving to Stopped inside the machine");
+            debug!("State moving to Stopped inside the machine");
             AudioState::stopped()
         }
     }

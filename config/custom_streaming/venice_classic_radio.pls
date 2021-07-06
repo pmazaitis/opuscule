@@ -1,0 +1,21 @@
+[playlist]
+numberofentries=6
+File1=http://144.217.49.251:80/stream1
+Title1=(#1 - 69/1000) Venice Classic Radio Italia
+Length1=-1
+File2=http://5.196.98.235:80/stream1
+Title2=(#2 - 39/500) Venice Classic Radio Italia
+Length2=-1
+File3=http://116.202.241.212:7015/stream
+Title3=(#3 - 101/1000) Venice Classic Radio Italia
+Length3=-1
+File4=http://5.135.173.165:80/stream1
+Title4=(#4 - 84/800) Venice Classic Radio Italia
+Length4=-1
+File5=http://116.202.241.212:8010/stream
+Title5=(#5 - 1194/5000) Venice Classic Radio Italia
+Length5=-1
+File6=http://174.36.206.197:8000/stream
+Title6=(#6 - 394/1000) Venice Classic Radio Italia
+Length6=-1
+Version=2

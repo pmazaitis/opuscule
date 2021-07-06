@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:-1,(#1 - 52/1000) psyradio * fm - progressive
+http://81.88.36.42:8010/progressive/
+#EXTINF:-1,(#2 - 92/512) psyradio * fm - progressive
+http://159.69.70.250:8010/progressive/

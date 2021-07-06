@@ -41,6 +41,7 @@ pub struct OpInternalCommand {
 
 pub enum OpComponent {
     InternalTesting,
+    CustomStreaming,
     // Shoutcast
     // PersonalMp3Streams
     // Oobler
@@ -180,3 +181,11 @@ struct OpStatusIndicators {
     shuffle: bool,
     mute: bool,
 }
+
+// Traits
+
+trait Playable {}
+
+trait Pausable {}
+
+trait Randomizable {}
