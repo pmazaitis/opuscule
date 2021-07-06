@@ -139,7 +139,7 @@ impl Controller {
                 println!("Got Refresh request");
             }
             OpUICommandType::Next => {
-                println!("Got Nexnt");
+                println!("Got Next");
             }
             OpUICommandType::Previous => {
                 println!("Got Previous");

@@ -50,8 +50,6 @@ async fn main() -> ! {
         .value()
         .expect("Could not get the server addr from the conf file");
 
-    println!("Server addr from config file: {:?}", &server_addr);
-
     // State machine to manage the player state
     let mut con = Controller::new();
 
