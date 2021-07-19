@@ -2,6 +2,7 @@
 use tracing::{debug, error, info, trace, warn};
 
 use crate::common::{OpUICommand, OpUICommandType};
+use rodio::{Decoder, OutputStream, OutputStreamHandle, Sink};
 
 machine!(
     #[derive(Clone, Debug, PartialEq, Copy)]
@@ -47,53 +48,58 @@ impl Playing {
         }
     }
     pub fn on_request_stop(self, _: RequestStop) -> Stopped {
-        println!("State moving to Stopped inside the machine");
+        debug!("State moving to Stopped inside the machine");
         Stopped {}
     }
     pub fn on_request_play(self, _: RequestPlay) -> Playing {
-        println!("Maintaining Playing inside the machine");
+        debug!("Maintaining Playing inside the machine");
         Playing {}
     }
 }
 
 impl Paused {
     pub fn on_request_play(self, _: RequestPlay) -> Playing {
-        println!("State moving to Playing inside the machine");
+        debug!("State moving to Playing inside the machine");
         Playing {}
     }
     pub fn on_request_stop(self, _: RequestStop) -> Stopped {
-        println!("State moving to Stopped inside the machine");
+        debug!("State moving to Stopped inside the machine");
         Stopped {}
     }
     pub fn on_request_pause(self, _: RequestPause) -> Paused {
-        println!("Maintaining Paused inside the machine");
+        debug!("Maintaining Paused inside the machine");
         Paused {}
     }
 }
 
 impl Stopped {
     pub fn on_request_play(self, _: RequestPlay) -> Playing {
-        println!("State moving to Playing inside the machine");
+        debug!("State moving to Playing inside the machine");
         Playing {}
     }
     pub fn on_request_stop(self, _: RequestStop) -> Stopped {
-        println!("Maintaining Stopped inside the machine");
+        debug!("Maintaining Stopped inside the machine");
         Stopped {}
     }
     pub fn on_request_pause(self, _: RequestPause) -> Stopped {
-        println!("Maintaining Stopped inside the machine");
+        debug!("Maintaining Stopped inside the machine");
         Stopped {}
     }
 }
 
 pub struct Controller {
     state: AudioState,
+    audio_out: OutputStreamHandle,
 }
 
 impl Controller {
     pub fn new() -> Controller {
+        let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+
         Controller {
             state: AudioState::Stopped(Stopped {}),
+            audio_out: stream_handle,
+            // now playing, somehow?
         }
     }
 

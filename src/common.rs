@@ -184,8 +184,8 @@ struct OpStatusIndicators {
 
 // Traits
 
-trait Playable {}
+trait CanPlay {}
 
-trait Pausable {}
+trait CanPause {}
 
-trait Randomizable {}
+trait CanRandomize {}

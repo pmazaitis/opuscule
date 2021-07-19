@@ -14,6 +14,11 @@ use justconfig::ConfPath;
 use justconfig::Config;
 use std::fs::File;
 
+use rodio::source::{SineWave, Source};
+use rodio::{Decoder, OutputStream, Sink};
+use std::io::BufReader;
+use std::time::Duration;
+
 #[macro_use]
 extern crate machine;
 
@@ -28,9 +33,6 @@ use common::{OpUICommand, OpUICommandType};
 
 #[allow(unused_imports)]
 use common::OpResult;
-
-// We eventually want to get this from config
-//const ADDR: &'static str = "127.0.0.1:8080";
 
 #[tokio::main]
 async fn main() -> ! {
@@ -64,7 +66,14 @@ async fn main() -> ! {
     let ui_client_server = ui_clients::handle_ui_clients(server_addr, ui_cmds_tx, state_rx);
     tokio::spawn(ui_client_server);
 
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+
     // Initialize and start components
+
+    // InternalTesting component
+    let it_sink = Sink::try_new(&stream_handle).unwrap();
+
+    //components::internal_testing::song(it_sink);
 
     // Main loop
 
