@@ -2,8 +2,6 @@ mod common;
 mod controller;
 mod ui_clients;
 
-mod components;
-
 use justconfig::item::ValueExtractor;
 use justconfig::processors::{Explode, Trim};
 use justconfig::sources::defaults::Defaults;
