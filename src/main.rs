@@ -4,20 +4,7 @@ mod controller;
 mod player;
 mod ui_clients;
 
-// use justconfig::item::ValueExtractor;
-// use justconfig::processors::{Explode, Trim};
-// use justconfig::sources::defaults::Defaults;
-// use justconfig::sources::env::Env;
-// use justconfig::sources::text::ConfigText;
-// use justconfig::validators::Range;
-// use justconfig::ConfPath;
-// use justconfig::Config;
-// use std::fs::File;
-
-// use rodio::source::{SineWave, Source};
-// use rodio::{Decoder, OutputStream, Sink};
-// use std::io::BufReader;
-// use std::time::Duration;
+use rodio::{OutputStream, Sink};
 
 use component_internal_testing::internal_testing::CompInternalTesting;
 
@@ -44,19 +31,10 @@ async fn main() -> ! {
 
     let op_config = player::configure::OpSettings::new();
 
-    // TODO Move this functionality into the configure module
-    // use justconfig::item::ValueExtractor;
-    // use justconfig::processors::Trim;
-    // let server_addr: String = settings
-    //     .get(settings.root().push("server").push("address"))
-    //     .trim()
-    //     .value()
-    //     .expect("Could not get the server addr from the conf file");
-
     let server_addr = op_config.get_server_address();
 
     // State machine to manage the player state
-    let mut con = Controller::new();
+    let mut op_controller = Controller::new();
 
     //Channels
     // We offer the ui_clients module the tx here, so we can get the commands it receives
@@ -90,7 +68,7 @@ async fn main() -> ! {
 
                 debug!("UI client command received in server loop: {:?}", &rec_command);
 
-                let status = con.handle_command(rec_command);
+                let status = op_controller.handle_command(rec_command);
 
                 let status_ser = serde_json::to_string(&status).unwrap();
 
