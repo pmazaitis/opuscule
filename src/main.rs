@@ -1,21 +1,25 @@
 mod common;
+mod component_internal_testing;
 mod controller;
+mod player;
 mod ui_clients;
 
-use justconfig::item::ValueExtractor;
-use justconfig::processors::{Explode, Trim};
-use justconfig::sources::defaults::Defaults;
-use justconfig::sources::env::Env;
-use justconfig::sources::text::ConfigText;
-use justconfig::validators::Range;
-use justconfig::ConfPath;
-use justconfig::Config;
-use std::fs::File;
+// use justconfig::item::ValueExtractor;
+// use justconfig::processors::{Explode, Trim};
+// use justconfig::sources::defaults::Defaults;
+// use justconfig::sources::env::Env;
+// use justconfig::sources::text::ConfigText;
+// use justconfig::validators::Range;
+// use justconfig::ConfPath;
+// use justconfig::Config;
+// use std::fs::File;
 
-use rodio::source::{SineWave, Source};
-use rodio::{Decoder, OutputStream, Sink};
-use std::io::BufReader;
-use std::time::Duration;
+// use rodio::source::{SineWave, Source};
+// use rodio::{Decoder, OutputStream, Sink};
+// use std::io::BufReader;
+// use std::time::Duration;
+
+use component_internal_testing::internal_testing::CompInternalTesting;
 
 #[macro_use]
 extern crate machine;
@@ -38,18 +42,18 @@ async fn main() -> ! {
     // install global collector configured based on RUST_LOG env var.
     tracing_subscriber::fmt::init();
 
-    // pull in settings
-    let mut settings = Config::default();
+    let op_config = player::configure::OpSettings::new();
 
-    let file = File::open("opuscule_settings.conf").expect("Could not open config file.");
-    let settings_file = ConfigText::new(file, "opuscule_settings.conf").unwrap();
-    settings.add_source(settings_file);
+    // TODO Move this functionality into the configure module
+    // use justconfig::item::ValueExtractor;
+    // use justconfig::processors::Trim;
+    // let server_addr: String = settings
+    //     .get(settings.root().push("server").push("address"))
+    //     .trim()
+    //     .value()
+    //     .expect("Could not get the server addr from the conf file");
 
-    let server_addr: String = settings
-        .get(settings.root().push("server").push("address"))
-        .trim()
-        .value()
-        .expect("Could not get the server addr from the conf file");
+    let server_addr = op_config.get_server_address();
 
     // State machine to manage the player state
     let mut con = Controller::new();
@@ -71,7 +75,10 @@ async fn main() -> ! {
     // InternalTesting component
     let it_sink = Sink::try_new(&stream_handle).unwrap();
 
-    //components::internal_testing::song(it_sink);
+    let comp_in_test = CompInternalTesting::new(it_sink);
+
+    comp_in_test.play_test_melody();
+    comp_in_test.play_test_melody_reverse();
 
     // Main loop
 
