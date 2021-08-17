@@ -1,1 +1,1 @@
-pub mod internal_testing;
+pub mod internal_testing_sine;
