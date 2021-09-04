@@ -64,9 +64,6 @@ async fn main() -> ! {
     // Initialize and start components
 
     // InternalTesting component
-    // let it_sink = Sink::try_new(&stream_handle).unwrap();
-
-    // let comp_in_test = InternalSine::new(it_sink);
 
     let comp_in_test = InternalSine::new(
         Sink::try_new(&stream_handle).unwrap(),
@@ -74,7 +71,7 @@ async fn main() -> ! {
         internal_cmds_rx,
     );
 
-    comp_in_test.play_test_melody();
+    // comp_in_test.play_test_melody();
     // comp_in_test.play_test_melody_reverse();
     comp_in_test.load(1);
 
