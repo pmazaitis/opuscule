@@ -37,13 +37,13 @@ impl InternalSine {
         it_sink: Sink,
         internal_tx: Sender<InternalCommand>,
         internal_rx: Receiver<String>,
-    ) -> InternalSine {
+    ) -> Self {
         let mut catalog = HashMap::new();
 
         catalog.insert(1, TestSineWave::test_melody_01());
         catalog.insert(2, TestSineWave::test_melody_01_reverse());
 
-        InternalSine {
+        Self {
             play_queue: VecDeque::new(),
             source_queue: VecDeque::new(),
             sink: it_sink,
