@@ -24,6 +24,14 @@ pub enum OpUICommandType {
     Refresh,
 }
 
+pub enum ComponentCategory {
+    Test,
+    Library,
+    Stream,
+    Soundscape,
+    Radio,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OpUICommand {
     pub addr: SocketAddr,

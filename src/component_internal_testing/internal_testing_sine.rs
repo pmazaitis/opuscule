@@ -13,7 +13,7 @@ use tracing::{debug, error, info, trace, warn};
 
 use crate::InternalCommand;
 
-use crate::common::OpStatusMetaData;
+use crate::common::{ComponentCategory, OpStatusMetaData};
 
 // On start up, we need to:
 //
@@ -30,6 +30,7 @@ pub struct InternalSine {
     status_tx: Sender<InternalCommand>,
     cmd_rx: Receiver<String>,
     catalog: HashMap<u32, TestSineWave>,
+    category: ComponentCategory,
 }
 
 impl InternalSine {
@@ -50,6 +51,7 @@ impl InternalSine {
             status_tx: internal_tx,
             cmd_rx: internal_rx,
             catalog: catalog,
+            category: ComponentCategory::Test,
         }
     }
 
