@@ -13,7 +13,7 @@ use tracing::{debug, error, info, trace, warn};
 
 use crate::InternalCommand;
 
-use crate::common::{ComponentCategory, OpStatusMetaData};
+use crate::common::{OpComponent, OpComponentCategory, OpStatusMetaData};
 
 // On start up, we need to:
 //
@@ -23,6 +23,8 @@ use crate::common::{ComponentCategory, OpStatusMetaData};
 
 // Then, we need to accept UUIDs and send the appropriate data to the sink
 
+// Try the actor pattern (https://ryhl.io/blog/actors-with-tokio/):
+
 pub struct InternalSine {
     play_queue: VecDeque<TestSineWave>,
     source_queue: VecDeque<TestSineWave>,
@@ -30,7 +32,7 @@ pub struct InternalSine {
     status_tx: Sender<InternalCommand>,
     cmd_rx: Receiver<String>,
     catalog: HashMap<u32, TestSineWave>,
-    category: ComponentCategory,
+    component: OpComponent,
 }
 
 impl InternalSine {
@@ -51,7 +53,7 @@ impl InternalSine {
             status_tx: internal_tx,
             cmd_rx: internal_rx,
             catalog: catalog,
-            category: ComponentCategory::Test,
+            component: OpComponent::SineWave,
         }
     }
 

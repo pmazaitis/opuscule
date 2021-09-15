@@ -1,6 +1,16 @@
-#![allow(dead_code)] // FIXME remove when done working through the data structures
+#![allow(dead_code)]
+use rodio::source::SineWave;
+// FIXME remove when done working through the data structures
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+
+// Messages /////////////////////////////////
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct OpUICommand {
+    pub addr: SocketAddr,
+    pub command: OpUICommandType,
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(tag = "OpUICommandType")]
@@ -24,44 +34,87 @@ pub enum OpUICommandType {
     Refresh,
 }
 
-pub enum ComponentCategory {
-    Test,
+#[derive(Debug, Clone)]
+pub struct OpInternalCommand {
+    pub recipient: OpComponent,
+    pub command: OpInternalCommandType,
+}
+
+#[derive(Debug, Clone)]
+pub enum OpInternalCommandType {
+    Pause,
+    Play,
+    GetCatalog,
+    Load { id: OpusID },
+    ClearOpus,
+    Reload,
+    ClearQueue,
+    Repeat(Option<bool>),
+    Shuffle(Option<bool>),
+}
+
+#[derive(Debug, Clone)]
+pub struct OpComponentCommand {
+    pub command: OpComponentCommandType,
+}
+
+#[derive(Debug, Clone)]
+pub enum OpComponentCommandType {
+    CatalogUpdate,
+    Stopped,
+    Priority(OpusID),
+}
+
+// Component Structure ////////////////////////////////////////////////////
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum OpComponentCategory {
+    Testing,
     Library,
     Stream,
     Soundscape,
     Radio,
 }
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum OpComponent {
+    SineWave,
+    Mp3,
+    Local,
+    Subsonic,
+    Custom,
+    Shoutcast,
+    Spotify,
+    Oobler,
+    Boodler,
+    FM,
+    WX,
+}
+
+pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
+    match opcomp {
+        OpComponent::SineWave => OpComponentCategory::Testing,
+        OpComponent::Mp3 => OpComponentCategory::Testing,
+        OpComponent::Local => OpComponentCategory::Library,
+        OpComponent::Subsonic => OpComponentCategory::Library,
+        OpComponent::Custom => OpComponentCategory::Stream,
+        OpComponent::Shoutcast => OpComponentCategory::Stream,
+        OpComponent::Spotify => OpComponentCategory::Stream,
+        OpComponent::Oobler => OpComponentCategory::Soundscape,
+        OpComponent::Boodler => OpComponentCategory::Soundscape,
+        OpComponent::FM => OpComponentCategory::Radio,
+        OpComponent::WX => OpComponentCategory::Radio,
+    }
+}
+
+// Opus Structure //////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct OpUICommand {
-    pub addr: SocketAddr,
-    pub command: OpUICommandType,
-}
-
-pub enum OpInternalCommandType {
-    Stop,
-    Play,
-}
-
-pub struct OpInternalCommand {
-    pub command: OpInternalCommandType,
-}
-
-pub enum OpComponent {
-    InternalTesting,
-    CustomStreaming,
-    // Shoutcast
-    // PersonalMp3Streams
-    // Oobler
-    // ...
-}
-
-pub struct OpusId {
+pub struct OpusID {
     component: OpComponent,
     id: u128, // TODO investigate ulid?
 }
 
-////// Structures for returning status
+////// Structures for returning status ////////////////////////
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum OpResult {
