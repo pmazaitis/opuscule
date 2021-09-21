@@ -45,7 +45,7 @@ pub enum OpInternalCommandType {
     Pause,
     Play,
     GetCatalog,
-    Load { id: OpusID },
+    Load { id: Opus },
     ClearOpus,
     Reload,
     ClearQueue,
@@ -62,7 +62,7 @@ pub struct OpComponentCommand {
 pub enum OpComponentCommandType {
     CatalogUpdate,
     Stopped,
-    Priority(OpusID),
+    Priority(Opus),
 }
 
 // Component Structure ////////////////////////////////////////////////////
@@ -77,6 +77,7 @@ pub enum OpComponentCategory {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OpComponent {
+    NullComp,
     SineWave,
     Mp3,
     Local,
@@ -92,6 +93,7 @@ pub enum OpComponent {
 
 pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
     match opcomp {
+        OpComponent::NullComp => OpComponentCategory::Testing,
         OpComponent::SineWave => OpComponentCategory::Testing,
         OpComponent::Mp3 => OpComponentCategory::Testing,
         OpComponent::Local => OpComponentCategory::Library,
@@ -108,10 +110,17 @@ pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
 
 // Opus Structure //////////////////////
 
+// Traits for this?
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct OpusID {
+pub struct Opus {
     component: OpComponent,
     id: u128, // TODO investigate ulid?
+              //operetti: Vec<Playable>,
+}
+
+struct Playable<T> {
+    value: T,
 }
 
 ////// Structures for returning status ////////////////////////
