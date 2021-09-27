@@ -11,9 +11,7 @@ use tokio::sync::{mpsc::Sender, watch::Receiver};
 
 use tracing::{debug, error, info, trace, warn};
 
-use crate::InternalCommand;
-
-use crate::common::OpStatusMetaData;
+use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpStatusMetaData};
 
 // On start up, we need to:
 //
@@ -23,21 +21,21 @@ use crate::common::OpStatusMetaData;
 
 // Then, we need to accept UUIDs and send the appropriate data to the sink
 
+// Try the actor pattern (https://ryhl.io/blog/actors-with-tokio/):
+
 pub struct InternalSine {
     play_queue: VecDeque<TestSineWave>,
     source_queue: VecDeque<TestSineWave>,
     sink: Sink,
-    status_tx: Sender<InternalCommand>,
+    // status_tx: Sender<OpComponentCommand>,
+    status_tx: Sender<String>,
     cmd_rx: Receiver<String>,
     catalog: HashMap<u32, TestSineWave>,
+    component: OpComponent,
 }
 
 impl InternalSine {
-    pub fn new(
-        it_sink: Sink,
-        internal_tx: Sender<InternalCommand>,
-        internal_rx: Receiver<String>,
-    ) -> Self {
+    pub fn new(it_sink: Sink, internal_tx: Sender<String>, internal_rx: Receiver<String>) -> Self {
         let mut catalog = HashMap::new();
 
         catalog.insert(1, TestSineWave::test_melody_01());
@@ -50,6 +48,7 @@ impl InternalSine {
             status_tx: internal_tx,
             cmd_rx: internal_rx,
             catalog: catalog,
+            component: OpComponent::SineWave,
         }
     }
 
@@ -68,6 +67,7 @@ impl InternalSine {
         match self.catalog.get(&id) {
             Some(o) => {
                 for note in o.playable_list.clone() {
+                    self.sink.pause();
                     self.sink.append(
                         SineWave::new(note.frequency)
                             .take_duration(Duration::from_secs_f32(note.duration))
@@ -76,6 +76,12 @@ impl InternalSine {
                 }
             }
             None => {}
+        }
+    }
+
+    pub fn play(&self) {
+        if self.sink.is_paused() {
+            self.sink.play();
         }
     }
 

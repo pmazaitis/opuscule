@@ -11,7 +11,9 @@ use rodio::{OutputStream, Sink};
 
 use component_internal_testing::internal_testing_sine::InternalSine;
 
-use player::internal_command_protocol::InternalCommand;
+use component_internal_testing::nullcomp::NullCompActorHandler;
+
+use common::OpComponentCommand;
 
 #[macro_use]
 extern crate machine;
@@ -47,7 +49,9 @@ async fn main() -> ! {
     // We offer the ui_clients module the rx so it can distribute state
     let (ui_status_tx, ui_state_rx) = watch::channel::<String>(String::from("NOOP"));
     // We offer the components the tx here, so we can get the state they generate
-    let (internal_state_tx, mut internal_state_rx) = mpsc::channel::<InternalCommand>(10);
+    // let (internal_state_tx, mut internal_state_rx) = mpsc::channel::<OpComponentCommand>(10);
+
+    let (internal_state_tx, mut internal_state_rx) = mpsc::channel::<String>(10);
     // We offer the components the rx so the controller can accept commands from the controller
     let (internal_cmds_tx, internal_cmds_rx) = watch::channel::<String>(String::from("NOOP"));
 
@@ -58,7 +62,7 @@ async fn main() -> ! {
     let ui_client_server = ui_clients::handle_ui_clients(server_addr, ui_cmds_tx, ui_state_rx);
     tokio::spawn(ui_client_server);
 
-    // Spin up the rodio subsystem to manage streams
+    // Spin up the rodio subsystem to create and manage audio streams for each component
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
 
     // Initialize and start components
@@ -67,37 +71,52 @@ async fn main() -> ! {
 
     let comp_in_test = InternalSine::new(
         Sink::try_new(&stream_handle).unwrap(),
-        internal_state_tx,
-        internal_cmds_rx,
+        internal_state_tx.clone(),
+        internal_cmds_rx.clone(),
     );
 
     // comp_in_test.play_test_melody();
     // comp_in_test.play_test_melody_reverse();
     comp_in_test.load(1);
-
-    // let internal_test_handle = tokio::spawn(comp_in_test.run());
-
-    //sleep(Duration::from_millis(1000)).await;
-
-    thread::sleep(time::Duration::from_secs(5));
-
     comp_in_test.load(2);
+    comp_in_test.load(1);
+    comp_in_test.play();
+    // // let internal_test_handle = tokio::spawn(comp_in_test.run());
+
+    // //sleep(Duration::from_millis(1000)).await;
+
+    // thread::sleep(time::Duration::from_secs(5));
+
+    // comp_in_test.load(2);
+
+    // Set up NullComp
+
+    let mut comp_null =
+        NullCompActorHandler::new(internal_cmds_rx.clone(), internal_state_tx.clone());
+
+    let comp_null_loop = tokio::spawn(comp_null.handle_messages());
 
     // Main loop
 
     loop {
         tokio::select! {
-            result = ui_cmds_rx.recv() => {
+            ui_command = ui_cmds_rx.recv() => {
 
-                let rec_command = serde_json::from_str(result.unwrap().as_str()).unwrap();
+                let rec_command = serde_json::from_str(ui_command.unwrap().as_str()).unwrap();
 
-                debug!("UI client command received in server loop: {:?}", &rec_command);
+                debug!("Sending test to internal command channel");
+                internal_cmds_tx.send("test".to_string());
+
 
                 let status = op_controller.handle_command(rec_command);
 
                 let status_ser = serde_json::to_string(&status).unwrap();
 
                 ui_status_tx.send(status_ser).unwrap();
+            }
+            // check internal command bus here
+            int_state_update = internal_state_rx.recv() => {
+
             }
         }
     }
