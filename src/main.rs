@@ -1,17 +1,16 @@
 #![allow(dead_code)]
 #![allow(unused)]
 
+mod clients;
 mod common;
-mod component_internal_testing;
-mod controller;
-mod player;
-mod ui_clients;
+mod components;
+mod state;
 
 use rodio::{OutputStream, Sink};
 
-use component_internal_testing::internal_testing_sine::InternalSine;
+use components::component_internal_testing::internal_testing_sine::InternalSine;
 
-use component_internal_testing::nullcomp::NullCompActorHandler;
+use components::component_internal_testing::nullcomp::NullCompActorHandler;
 
 use common::OpComponentCommand;
 
@@ -26,7 +25,7 @@ use tracing_subscriber;
 
 use std::{thread, time};
 
-use controller::Controller;
+use state::state_controller::Controller;
 
 use common::{OpUICommand, OpUICommandType};
 
@@ -39,7 +38,7 @@ async fn main() -> ! {
     // install global collector configured based on RUST_LOG env var.
     tracing_subscriber::fmt::init();
 
-    let op_config = player::configure::OpSettings::new();
+    let op_config = state::configure::OpSettings::new();
 
     let server_addr = op_config.get_server_address();
 
@@ -59,8 +58,9 @@ async fn main() -> ! {
     let mut op_controller = Controller::new();
 
     // Spin up UI server to handle user interface clients connecting over the net
-    let ui_client_server = ui_clients::handle_ui_clients(server_addr, ui_cmds_tx, ui_state_rx);
-    tokio::spawn(ui_client_server);
+    let ui_client_controller =
+        clients::ui_client_controller::handle_ui_clients(server_addr, ui_cmds_tx, ui_state_rx);
+    tokio::spawn(ui_client_controller);
 
     // Spin up the rodio subsystem to create and manage audio streams for each component
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
@@ -94,7 +94,7 @@ async fn main() -> ! {
     let mut comp_null =
         NullCompActorHandler::new(internal_cmds_rx.clone(), internal_state_tx.clone());
 
-    let comp_null_loop = tokio::spawn(comp_null.handle_messages());
+    // FIXME let comp_null_loop = tokio::spawn(comp_null.handle_messages());
 
     // Main loop
 
