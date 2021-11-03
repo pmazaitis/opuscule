@@ -6,6 +6,26 @@ use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpStat
 
 // Phase I - get the message bus working
 
+pub struct NullCompOpus {
+    id: u32,
+    list_of_playables: String,
+    repeat: bool,
+    random: bool,
+    //metadata: OpStatusMetaData,
+}
+
+impl NullCompOpus {
+    pub fn new(id: u32, list_of_playables: String) -> Self {
+        Self {
+            id,
+            list_of_playables,
+            repeat: false,
+            random: false,
+            //metadata: Op
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct NullCompActorHandler {
     incoming_command_channel: Receiver<String>,

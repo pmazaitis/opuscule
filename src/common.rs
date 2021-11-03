@@ -142,6 +142,11 @@ struct OpStatus {
     indicators: OpStatusIndicators,
 }
 
+#[derive(Clone)]
+pub enum OpusType {
+    NullComp,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct OpPlayState {}
 
