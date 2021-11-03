@@ -1,4 +1,4 @@
-use super::{OpUICommand, OpUICommandType};
+use crate::common::{OpUICommand, OpUICommandType};
 #[allow(unused_imports)]
 use tracing::{debug, error, info, trace, warn};
 
