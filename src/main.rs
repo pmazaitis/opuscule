@@ -10,7 +10,7 @@ use rodio::{OutputStream, Sink};
 
 use components::component_internal_testing::internal_testing_sine::InternalSine;
 
-use components::component_internal_testing::nullcomp::NullCompActorHandler;
+use component_internal_testing::nullcomp::{NullCompActorHandler, NullCompOpus};
 
 use common::OpComponentCommand;
 
@@ -23,6 +23,7 @@ use tokio::{sync::mpsc, sync::watch};
 use tracing::{debug, error, info, trace, warn};
 use tracing_subscriber;
 
+use std::collections::HashMap;
 use std::{thread, time};
 
 use state::state_controller::Controller;
@@ -67,12 +68,41 @@ async fn main() -> ! {
 
     // Initialize and start components
 
-    // Set up NullComp
+    // InternalTesting component
+
+    // let comp_in_test = InternalSine::new(
+    //     Sink::try_new(&stream_handle).unwrap(),
+    //     internal_state_tx.clone(),
+    //     internal_cmds_rx.clone(),
+    // );
+
+    // comp_in_test.play_test_melody();
+    // comp_in_test.play_test_melody_reverse();
+    // comp_in_test.load(1);
+    // comp_in_test.load(2);
+    // comp_in_test.load(1);
+    // comp_in_test.play();
+    // // let internal_test_handle = tokio::spawn(comp_in_test.run());
+
+    // //sleep(Duration::from_millis(1000)).await;
+
+    // thread::sleep(time::Duration::from_secs(5));
+
+    // comp_in_test.load(2);
+
+    // # NullComp
+
+    // ## Create Test Operai
+
+    let mut null_comp_menu: HashMap<u32, NullCompOpus> = HashMap::new();
+
+    null_comp_menu.insert(1, NullCompOpus::new(1, String::from("test 1")));
+    null_comp_menu.insert(2, NullCompOpus::new(2, String::from("test 2")));
+
+    // ## Create Null Comp Actor
 
     let mut comp_null =
         NullCompActorHandler::new(internal_cmds_rx.clone(), internal_state_tx.clone());
-
-    // FIXME let comp_null_loop = tokio::spawn(comp_null.handle_messages());
 
     // Main loop
 

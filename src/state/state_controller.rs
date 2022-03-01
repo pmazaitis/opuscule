@@ -4,10 +4,17 @@ use tracing::{debug, error, info, trace, warn};
 use crate::common::{OpUICommand, OpUICommandType};
 use rodio::{Decoder, OutputStream, OutputStreamHandle, Sink};
 
+trait Opus {}
+
+#[derive(Copy)]
+struct Queues {
+    now_playing: Vec<Box<Opus>>,
+}
+
 machine!(
     #[derive(Clone, Debug, PartialEq, Copy)]
     enum AudioState {
-        Playing,
+        Playing { queues: Queues },
         Paused,
         Stopped,
     }
