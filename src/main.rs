@@ -67,28 +67,6 @@ async fn main() -> ! {
 
     // Initialize and start components
 
-    // InternalTesting component
-
-    let comp_in_test = InternalSine::new(
-        Sink::try_new(&stream_handle).unwrap(),
-        internal_state_tx.clone(),
-        internal_cmds_rx.clone(),
-    );
-
-    // comp_in_test.play_test_melody();
-    // comp_in_test.play_test_melody_reverse();
-    comp_in_test.load(1);
-    comp_in_test.load(2);
-    comp_in_test.load(1);
-    comp_in_test.play();
-    // // let internal_test_handle = tokio::spawn(comp_in_test.run());
-
-    // //sleep(Duration::from_millis(1000)).await;
-
-    // thread::sleep(time::Duration::from_secs(5));
-
-    // comp_in_test.load(2);
-
     // Set up NullComp
 
     let mut comp_null =
