@@ -8,9 +8,13 @@ mod state;
 
 use rodio::{OutputStream, Sink};
 
-use components::component_internal_testing::internal_testing_sine::InternalSine;
+// use components::internal_testing::internal_testing_sine::InternalSine;
 
-use component_internal_testing::nullcomp::{NullCompActorHandler, NullCompOpus};
+use components::internal_testing::nullcomp::NullCompActorHandler;
+
+use components::internal_testing::nullcomp::NullCompOpus;
+
+// , NullCompOpus};
 
 use common::OpComponentCommand;
 
