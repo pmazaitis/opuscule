@@ -12,12 +12,16 @@ pub struct OpSettings {
     config: Config,
 }
 
+
+
+
+
 impl OpSettings {
     pub fn new() -> OpSettings {
         let mut settings = Config::default();
 
-        let file = File::open("opuscule_settings.conf").expect("Could not open config file.");
-        let settings_file = ConfigText::new(file, "opuscule_settings.conf").unwrap();
+        let file = File::open("opuscule_server.conf").expect("Could not open config file.");
+        let settings_file = ConfigText::new(file, "opuscule_server.conf").unwrap();
         settings.add_source(settings_file);
 
         OpSettings { config: settings }
