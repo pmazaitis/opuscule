@@ -4,6 +4,22 @@ use tracing::{debug, error, info, trace, warn};
 
 use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpStatusMetaData};
 
+// This is a module to model and test the component system.
+//
+// A component must support the following:
+//
+// - (menu)  Present a menu subtree of available playables on request
+// - (load)  Accept a command to load a playable into the local queue, with a UUID as an argument
+// - (play)  Accept a command to begin playing from the local queue
+// - (stop)  Accept a command to stop playing from the local queue
+// - (clear) Accept a command to clear the local queue
+//
+// A component can support the following, if reasonable to do so:
+//
+// - (pause)  Accept a command to pause the current queue, and start from the paused position
+// - (random) Set a flag to (destructively) randomize the local queue
+// - (repeat) Set a flag to repeat on an empty queue
+
 // Phase I - get the message bus working
 
 pub struct NullCompOpus {
@@ -25,6 +41,13 @@ impl NullCompOpus {
         }
     }
 }
+
+/*
+What if we try this:
+
+on creating a new struct, the event handlers are async move'd into a
+concurrently running block?
+*/
 
 #[derive(Clone)]
 pub struct NullCompActorHandler {

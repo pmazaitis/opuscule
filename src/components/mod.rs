@@ -1,1 +1,1 @@
-pub mod component_internal_testing;
+pub mod internal_testing;
