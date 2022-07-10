@@ -25,7 +25,6 @@ extern crate machine;
 use tokio::{sync::mpsc, sync::watch};
 #[allow(unused_imports)] // FIXME remove this when we know what tracing options we need
 use tracing::{debug, error, info, trace, warn};
-use tracing_subscriber;
 
 use std::collections::HashMap;
 use std::{thread, time};
