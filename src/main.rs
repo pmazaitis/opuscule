@@ -5,6 +5,7 @@ mod clients;
 mod common;
 mod components;
 mod state;
+mod settings;
 
 use rodio::{OutputStream, Sink};
 
@@ -17,6 +18,8 @@ use components::internal_testing::nullcomp::NullCompOpus;
 // , NullCompOpus};
 
 use common::OpComponentCommand;
+
+use settings::Settings;
 
 #[macro_use]
 extern crate machine;
@@ -43,9 +46,7 @@ async fn main() -> ! {
     // install global collector configured based on RUST_LOG env var.
     tracing_subscriber::fmt::init();
 
-    let op_config = state::configure::OpSettings::new();
-
-    let server_addr = op_config.get_server_address();
+    let settings = Settings::new();
 
     //Channels
     // We offer the ui_clients module the tx here, so we can get the commands it receives
@@ -61,6 +62,8 @@ async fn main() -> ! {
 
     // Controller to manage the player state
     let mut op_controller = Controller::new();
+
+    let server_addr = "127.0.0.1";
 
     // Spin up UI server to handle user interface clients connecting over the net
     let ui_client_controller =
@@ -98,15 +101,15 @@ async fn main() -> ! {
 
     // ## Create Test Operai
 
-    let mut null_comp_menu: HashMap<u32, NullCompOpus> = HashMap::new();
-
-    null_comp_menu.insert(1, NullCompOpus::new(1, String::from("test 1")));
-    null_comp_menu.insert(2, NullCompOpus::new(2, String::from("test 2")));
+//     let mut null_comp_menu: HashMap<u32, NullCompOpus> = HashMap::new();
+// 
+//     null_comp_menu.insert(1, NullCompOpus::new(1, String::from("test 1")));
+//     null_comp_menu.insert(2, NullCompOpus::new(2, String::from("test 2")));
 
     // ## Create Null Comp Actor
 
-    let mut comp_null =
-        NullCompActorHandler::new(internal_cmds_rx.clone(), internal_state_tx.clone());
+    // let mut comp_null =
+    //     NullCompActorHandler::new(internal_cmds_rx.clone(), internal_state_tx.clone());
 
     // Main loop
 
