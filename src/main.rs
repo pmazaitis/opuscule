@@ -5,6 +5,7 @@ mod clients;
 mod common;
 mod components;
 mod state;
+mod system;
 
 use rodio::{OutputStream, Sink};
 
