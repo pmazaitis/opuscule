@@ -1,5 +1,5 @@
 use config::{Config, ConfigError, Environment, File};
-use serde_derive::Deserialize;
+use serde::{Serialize,Deserialize};
 use std::env;
 
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
@@ -7,8 +7,16 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 #[derive(Debug, Deserialize)]
 #[allow(unused)]
 struct Network {
-    address: IpAddr,
-    port: u32,
+    host_ip: IpAddr,
+    host_port: u32,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(unused)]
+pub struct Settings {
+    // debug: bool,
+    network: Network,
+
 }
 
 
@@ -21,7 +29,7 @@ impl Settings {
         .build()?;  
         
         // Now that we're done, let's access our configuration
-        println!("settings: {:?}", s);
+        // println!("settings: {:?}", s);
         
         // You can deserialize (and thus freeze) the entire configuration as
         s.try_deserialize() 

@@ -46,7 +46,12 @@ async fn main() -> ! {
     // install global collector configured based on RUST_LOG env var.
     tracing_subscriber::fmt::init();
 
-    let settings = Settings::new();
+    let settings = match Settings::new() {
+        Ok(s) => s,
+        Err(e) => std::process::exit(-65) 
+    };
+
+    println!("settings: {:?}", settings);
 
     //Channels
     // We offer the ui_clients module the tx here, so we can get the commands it receives
@@ -63,7 +68,7 @@ async fn main() -> ! {
     // Controller to manage the player state
     let mut op_controller = Controller::new();
 
-    let server_addr = "127.0.0.1";
+    let server_addr = "127.0.0.1".to_string();
 
     // Spin up UI server to handle user interface clients connecting over the net
     let ui_client_controller =
