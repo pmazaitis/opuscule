@@ -2,10 +2,10 @@
 title: components
 ---
 
-Upon startup, components get:
+Upon startup, components get as arguments:
 
 - A rodio stereo channel for playing samples
-- A channel for reporting state change
+- A channel handle for reporting state change
 
 Components need to accept the following methods:
 
@@ -16,3 +16,5 @@ Components need to accept the following methods:
 .load(id:ulnd) -> Result<(),E>
 .set_repeat(status:bool) -> Result<(),E>
 .set_random(status:bool) -> Result<(),E>
+.get_playables_menu() -> Result<CompMenu,E>
+.get_playables_json() -> Result<String, E>
