@@ -163,6 +163,6 @@ impl Controller {
             }
         }
         //return (rc, astate);
-        return rc;
+        rc
     }
 }
