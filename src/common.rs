@@ -119,9 +119,7 @@ pub struct Opus {
               //operetti: Vec<Playable>,
 }
 
-struct Playable<T> {
-    value: T,
-}
+
 
 ////// Structures for returning status ////////////////////////
 
@@ -358,8 +356,30 @@ struct OpStatusIndicators {
 
 // Traits
 
-trait CanPlay {}
+// trait CanPlay {}
+// 
+// trait CanPause {}
+// 
+// trait CanRandomize {}
 
-trait CanPause {}
+trait Playable {
+    // Associated function signature; `Self` refers to the implementor type.
+    fn play() -> OpResult;
+    fn pause() -> OpResult;
+    fn stop() -> OpResult;
+    fn status() -> OpResult;
+    fn load(opus: Opus) -> OpResult;
+    fn toggle_repeat() -> OpResult;
+    fn set_repeat(status:bool) -> OpResult;
+    fn toggle_random() -> OpResult;
+    fn set_random(status:bool) -> OpResult;
+    fn get_playables_menu() -> Result<String, OpComponentError>;
+    // .get_playables_json() -> Result<String, E>
+}
 
-trait CanRandomize {}
+
+// Errors
+
+enum OpComponentError {
+    LoadFailure,
+}
