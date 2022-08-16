@@ -49,8 +49,8 @@ async fn main() -> ! {
     };
 
     println!("settings: {:?}", settings);
-
-    //Channels
+    
+    //Channels (move these into modules?)
     // We offer the ui_clients module the tx here, so we can get the commands it receives
     let (ui_cmds_tx, mut ui_cmds_rx) = mpsc::channel::<String>(10);
     // We offer the ui_clients module the rx so it can distribute state
@@ -65,11 +65,11 @@ async fn main() -> ! {
     // Controller to manage the player state
     let mut op_controller = Controller::new();
 
-    let server_addr = "127.0.0.1".to_string();
+    let server_addr = "127.0.0.1:8080".to_string();
 
     // Spin up UI server to handle user interface clients connecting over the net
     let ui_client_controller =
-        clients::ui_client_controller::handle_ui_clients(server_addr, ui_cmds_tx, ui_state_rx);
+        clients::ui_client_controller::handle_ui_clients(settings.server_addr(), ui_cmds_tx, ui_state_rx);
     tokio::spawn(ui_client_controller);
 
     // Spin up the rodio subsystem to create and manage audio streams for each component
