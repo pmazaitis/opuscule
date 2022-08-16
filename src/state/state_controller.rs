@@ -162,7 +162,6 @@ impl Controller {
                 println!("Got Softer");
             }
         }
-        //return (rc, astate);
         rc
     }
 }
