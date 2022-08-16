@@ -19,7 +19,6 @@ pub struct Settings {
 
 }
 
-
 impl Settings {
     pub fn new() -> Result<Self, ConfigError> {
         let run_mode = env::var("RUN_MODE").unwrap_or_else(|_| "development".into());
@@ -33,5 +32,8 @@ impl Settings {
         
         // You can deserialize (and thus freeze) the entire configuration as
         s.try_deserialize() 
-    }   
+    }
+    pub fn server_addr(&self) -> String {
+        format!("{}:{}",&self.network.host_ip.to_string(),&self.network.host_port.to_string()) 
+    }  
 }
