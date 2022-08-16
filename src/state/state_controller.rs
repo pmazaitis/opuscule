@@ -16,30 +16,30 @@ machine!(
 );
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct RequestStop;
+pub struct Stop;
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct RequestPause;
+pub struct Pause;
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct RequestPlay;
+pub struct Play;
 
 transitions!(AudioState,
   [
-    (Playing, RequestPause) => [Paused, Stopped],
-    (Playing, RequestStop) => Stopped,
-    (Playing, RequestPlay) => Playing,
-    (Paused, RequestPlay) => Playing,
-    (Paused, RequestStop) => Stopped,
-    (Paused, RequestPause) => Paused,
-    (Stopped, RequestPlay) => Playing,
-    (Stopped, RequestStop) => Stopped,
-    (Stopped, RequestPause) => Stopped
+    (Playing, Pause) => [Paused, Stopped],
+    (Playing, Stop) => Stopped,
+    (Playing, Play) => Playing,
+    (Paused, Play) => Playing,
+    (Paused, Stop) => Stopped,
+    (Paused, Pause) => Paused,
+    (Stopped, Play) => Playing,
+    (Stopped, Stop) => Stopped,
+    (Stopped, Pause) => Stopped
   ]
 );
 
 impl Playing {
-    pub fn on_request_pause(self, _: RequestPause) -> AudioState {
+    pub fn on_pause(self, _: Pause) -> AudioState {
         // FIXME - test if current Opus is pausable to determine how this branches
         if true {
             debug!("State moving to Paused inside the machine");
@@ -49,41 +49,41 @@ impl Playing {
             AudioState::stopped()
         }
     }
-    pub fn on_request_stop(self, _: RequestStop) -> Stopped {
+    pub fn on_stop(self, _: Stop) -> Stopped {
         debug!("State moving to Stopped inside the machine");
         Stopped {}
     }
-    pub fn on_request_play(self, _: RequestPlay) -> Playing {
+    pub fn on_play(self, _: Play) -> Playing {
         debug!("Maintaining Playing inside the machine");
         Playing {}
     }
 }
 
 impl Paused {
-    pub fn on_request_play(self, _: RequestPlay) -> Playing {
+    pub fn on_play(self, _: Play) -> Playing {
         debug!("State moving to Playing inside the machine");
         Playing {}
     }
-    pub fn on_request_stop(self, _: RequestStop) -> Stopped {
+    pub fn on_stop(self, _: Stop) -> Stopped {
         debug!("State moving to Stopped inside the machine");
         Stopped {}
     }
-    pub fn on_request_pause(self, _: RequestPause) -> Paused {
+    pub fn on_pause(self, _: Pause) -> Paused {
         debug!("Maintaining Paused inside the machine");
         Paused {}
     }
 }
 
 impl Stopped {
-    pub fn on_request_play(self, _: RequestPlay) -> Playing {
+    pub fn on_play(self, _: Play) -> Playing {
         debug!("State moving to Playing inside the machine");
         Playing {}
     }
-    pub fn on_request_stop(self, _: RequestStop) -> Stopped {
+    pub fn on_stop(self, _: Stop) -> Stopped {
         debug!("Maintaining Stopped inside the machine");
         Stopped {}
     }
-    pub fn on_request_pause(self, _: RequestPause) -> Stopped {
+    pub fn on_pause(self, _: Pause) -> Stopped {
         debug!("Maintaining Stopped inside the machine");
         Stopped {}
     }
@@ -109,15 +109,15 @@ impl Controller {
         match rc.command {
             OpUICommandType::Play => {
                 println!("Got Play");
-                self.state = self.state.on_request_play(RequestPlay);
+                self.state = self.state.on_play(Play);
             }
             OpUICommandType::Stop => {
                 println!("Got Stop");
-                self.state = self.state.on_request_stop(RequestStop);
+                self.state = self.state.on_stop(Stop);
             }
             OpUICommandType::Pause => {
                 println!("Got Pause");
-                self.state = self.state.on_request_pause(RequestPause);
+                self.state = self.state.on_pause(Pause);
             }
             OpUICommandType::Advance => {
                 println!("Got Advance");
