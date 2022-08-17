@@ -45,7 +45,7 @@ pub enum OpInternalCommandType {
     Pause,
     Play,
     GetCatalog,
-    Load { id: Opus },
+    Load { id: OpusID },
     ClearOpus,
     Reload,
     ClearQueue,
@@ -62,7 +62,7 @@ pub struct OpComponentCommand {
 pub enum OpComponentCommandType {
     CatalogUpdate,
     Stopped,
-    Priority(Opus),
+    Priority(OpusID),
 }
 
 // Component Structure ////////////////////////////////////////////////////
@@ -110,13 +110,11 @@ pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
 
 // Opus Structure //////////////////////
 
-// Traits for this?
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Opus {
+pub struct OpusID {
     component: OpComponent,
     id: u128, // TODO investigate ulid?
-              //operetti: Vec<Playable>,
 }
 
 
@@ -356,30 +354,33 @@ struct OpStatusIndicators {
 
 // Traits
 
-// trait CanPlay {}
-// 
-// trait CanPause {}
-// 
-// trait CanRandomize {}
-
-trait Playable {
-    // Associated function signature; `Self` refers to the implementor type.
+pub trait Component {
     fn play() -> OpResult;
     fn pause() -> OpResult;
     fn stop() -> OpResult;
     fn status() -> OpResult;
-    fn load(opus: Opus) -> OpResult;
-    fn toggle_repeat() -> OpResult;
-    fn set_repeat(status:bool) -> OpResult;
-    fn toggle_random() -> OpResult;
-    fn set_random(status:bool) -> OpResult;
+    fn load(opus: OpusID) -> OpResult;
+    fn clear() -> OpResult;
     fn get_playables_menu() -> Result<String, OpComponentError>;
     // .get_playables_json() -> Result<String, E>
 }
 
+pub trait Playable {
+    // fn play() -> OpResult;
+    // fn pause() -> OpResult;
+    // fn stop() -> OpResult;
+    fn toggle_repeat() -> OpResult;
+    fn set_repeat(status:bool) -> OpResult;
+    fn toggle_random() -> OpResult;
+    fn set_random(status:bool) -> OpResult;
+    // .get_playables_json() -> Result<String, E>
+}
 
 // Errors
 
-enum OpComponentError {
-    LoadFailure,
+pub enum OpComponentError {
+    Load,
+    Play,
+    Pause,
+    
 }
