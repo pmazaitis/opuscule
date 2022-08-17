@@ -75,7 +75,7 @@ pub async fn handle_ui_clients(
                         let new_state = recd_state_channel.borrow().clone();
                         debug!("got state back for the clients:{:#?}", &(*new_state));
 
-                        match ui_client_writer.write_all(&(*new_state).as_bytes()).await {
+                        match ui_client_writer.write_all(new_state.as_bytes()).await {
                             Ok(_) => {}
                             Err(_) => {}
                         }
