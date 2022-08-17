@@ -290,7 +290,7 @@ impl Default for OpStatusMetaData {
             opus_tflt: None,                   // File type
             opus_tipl: None,                   // Involved people list
             opus_tit1: None,                   // Content group description
-            opus_tit2: "NO TITLE".to_string(), // Title/songname/content description
+            opus_tit2: "NO TITLE".to_string(), // Title/songname/content description // ???: Do we want this to fail?
             opus_tit3: None,                   // Subtitle/Description refinement
             opus_tkey: None,                   // Initial key
             opus_tlan: None,                   // Language(s)
