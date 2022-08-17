@@ -17,6 +17,8 @@ use components::internal_testing::nullcomp::NullCompOpus;
 
 use common::OpComponentCommand;
 
+use trees::Tree;
+
 use settings::Settings;
 
 #[macro_use]
