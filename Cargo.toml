@@ -19,4 +19,5 @@ rodio = "0.15"
 machine = "0.3"
 ulid = "0.6"
 config = "0.13"
+trees = "0.4.2"  # Menus
 
