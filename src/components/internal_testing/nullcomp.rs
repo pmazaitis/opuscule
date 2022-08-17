@@ -2,7 +2,7 @@ use tokio::sync::{mpsc::Sender, watch::Receiver};
 
 use tracing::{debug, error, info, trace, warn};
 
-use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpStatusMetaData};
+use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpComponentError, OpStatusMetaData, Component, Playable, OpResult, OpusID};
 
 // This is a module to model and test the component system.
 //
@@ -55,6 +55,38 @@ pub struct NullCompActorHandler {
     outgoing_status_channel: Sender<String>,
 }
 
+impl Component for NullCompActorHandler {
+    fn play() -> OpResult {
+        OpResult::OpStatus
+    }
+    
+    fn pause() -> OpResult {
+        OpResult::OpStatus
+    }
+    
+    fn stop() -> OpResult {
+        OpResult::OpStatus
+    }
+    
+    fn status() -> OpResult {
+        OpResult::OpStatus
+    }
+    
+    fn load(opus: OpusID) -> OpResult {
+        OpResult::OpStatus
+    }
+
+    fn clear() -> OpResult {
+        OpResult::OpStatus
+    }
+    
+    fn get_playables_menu() -> Result<String, OpComponentError> {
+       Ok("Whee".to_string())
+    }
+    
+
+}
+
 impl NullCompActorHandler {
     pub fn new(
         incoming_command_channel: Receiver<String>,
@@ -87,3 +119,16 @@ impl NullCompActorHandler {
 }
 
 // struct NullCompActor {}
+
+
+//     fn play() -> OpResult;
+// fn pause() -> OpResult;
+// fn stop() -> OpResult;
+// fn status() -> OpResult;
+// fn load(opus: Opus) -> OpResult;
+// fn toggle_repeat() -> OpResult;
+// fn set_repeat(status:bool) -> OpResult;
+// fn toggle_random() -> OpResult;
+// fn set_random(status:bool) -> OpResult;
+// fn clear_queue() -> OpResult;
+// fn get_playables_menu() -> Result<String, OpComponentError>;
