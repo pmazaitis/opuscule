@@ -17,7 +17,15 @@ tracing = "0.1"
 tracing-subscriber = "0.2"
 rodio = "0.15"
 machine = "0.3"
-ulid = "0.6"
 config = "0.13"
+uuid = "1.1.2"
 
+
+[dependencies.uuid]
+version = "1.1.2"
+features = [
+    "v4",                # Lets you generate random UUIDs
+    "fast-rng",          # Use a faster (but still sufficiently random) RNG
+    "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
+]
 
