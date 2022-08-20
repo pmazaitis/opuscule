@@ -4,6 +4,9 @@ use rodio::source::SineWave;
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
+use uuid::Uuid;
+type OpusSerialId = Uuid;
+
 // Messages /////////////////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -45,7 +48,7 @@ pub enum OpInternalCommandType {
     Pause,
     Play,
     GetCatalog,
-    Load { id: OpusID },
+    Load { id: OpusId },
     ClearOpus,
     Reload,
     ClearQueue,
@@ -62,13 +65,14 @@ pub struct OpComponentCommand {
 pub enum OpComponentCommandType {
     CatalogUpdate,
     Stopped,
-    Priority(OpusID),
+    Priority(OpusId),
 }
 
 // Component Structure ////////////////////////////////////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OpComponentCategory {
+    System,
     Testing,
     Library,
     Stream,
@@ -77,6 +81,7 @@ pub enum OpComponentCategory {
 }
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OpComponent {
+    Opuscule,
     NullComp,
     SineWave,
     Mp3,
@@ -93,6 +98,7 @@ pub enum OpComponent {
 
 pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
     match opcomp {
+        OpComponent::Opuscule => OpComponentCategory::System,
         OpComponent::NullComp => OpComponentCategory::Testing,
         OpComponent::SineWave => OpComponentCategory::Testing,
         OpComponent::Mp3 => OpComponentCategory::Testing,
@@ -112,9 +118,9 @@ pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct OpusID {
+pub struct OpusId {
     component: OpComponent,
-    id: u128, // TODO investigate ulid?
+    id: OpusSerialId,
 }
 
 
