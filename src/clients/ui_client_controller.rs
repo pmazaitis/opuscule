@@ -54,7 +54,7 @@ pub async fn handle_ui_clients(
 
                         // process json and send up to the server
 
-                        match serde_json::from_str(&line.as_str()) {
+                        match serde_json::from_str(line.as_str()) {
                             Ok(cti) => {
                                 let cmd_type_in: OpUICommandType  = cti;
                                 let cmd: OpUICommand = OpUICommand {addr: ui_client_addr, command: cmd_type_in};
