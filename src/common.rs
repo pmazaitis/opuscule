@@ -119,8 +119,8 @@ pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OpusId {
-    component: OpComponent,
-    id: OpusSerialId,
+    pub(crate) component: OpComponent,
+    pub(crate) id: OpusSerialId,
 }
 
 
@@ -365,7 +365,7 @@ pub trait Component {
     fn pause() -> OpResult;
     fn stop() -> OpResult;
     fn status() -> OpResult;
-    fn load(opus: OpusID) -> OpResult;
+    fn load(opus: OpusId) -> OpResult;
     fn clear() -> OpResult;
     fn get_playables_menu() -> Result<String, OpComponentError>;
     // .get_playables_json() -> Result<String, E>

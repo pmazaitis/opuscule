@@ -2,7 +2,7 @@ use tokio::sync::{mpsc::Sender, watch::Receiver};
 
 use tracing::{debug, error, info, trace, warn};
 
-use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpComponentError, OpStatusMetaData, Component, Playable, OpResult, OpusID};
+use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpComponentError, OpStatusMetaData, Component, Playable, OpResult, OpusId};
 
 // This is a module to model and test the component system.
 //
@@ -72,7 +72,7 @@ impl Component for NullCompActorHandler {
         OpResult::OpStatus
     }
     
-    fn load(opus: OpusID) -> OpResult {
+    fn load(opus: OpusId) -> OpResult {
         OpResult::OpStatus
     }
 
