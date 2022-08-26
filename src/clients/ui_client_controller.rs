@@ -1,4 +1,4 @@
-use super::{OpUICommand, OpUICommandType};
+use crate::common::{OpUICommand, OpUICommandType};
 #[allow(unused_imports)]
 use tracing::{debug, error, info, trace, warn};
 
@@ -54,7 +54,7 @@ pub async fn handle_ui_clients(
 
                         // process json and send up to the server
 
-                        match serde_json::from_str(&line.as_str()) {
+                        match serde_json::from_str(line.as_str()) {
                             Ok(cti) => {
                                 let cmd_type_in: OpUICommandType  = cti;
                                 let cmd: OpUICommand = OpUICommand {addr: ui_client_addr, command: cmd_type_in};
@@ -75,7 +75,7 @@ pub async fn handle_ui_clients(
                         let new_state = recd_state_channel.borrow().clone();
                         debug!("got state back for the clients:{:#?}", &(*new_state));
 
-                        match ui_client_writer.write_all(&(*new_state).as_bytes()).await {
+                        match ui_client_writer.write_all(new_state.as_bytes()).await {
                             Ok(_) => {}
                             Err(_) => {}
                         }

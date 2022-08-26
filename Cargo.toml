@@ -2,19 +2,25 @@
 name = "opuscule"
 version = "0.1.0"
 authors = ["Paul Mazaitis <paul@mazaitis.org>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 futures = "0.3"
-tokio = { version="1.7", features=["full"] }
-serde = { version="1.0.126", features=["derive"] }
-serde_json = "1.0.50"
+tokio = { version = "1.20", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 tokio-serde-json = "0.3"
 log = "0.4"
 tracing = "0.1"
 tracing-subscriber = "0.2"
-rodio = "0.14.0"
-machine = "0.3.0"
-justconfig = "1.0.0"
+rodio = "0.15"
+machine = "0.3"
+config = "0.13"
+uuid = { version = "1.1.2", features = ["v4", "fast-rng", "macro-diagnostics", "serde"] }
+r3bl_rs_utils = "0.4.0"
+
+
+
+
