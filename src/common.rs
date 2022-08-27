@@ -33,7 +33,6 @@ pub enum OpUICommandType {
     Louder,
     Softer,
     Mute { set_to: Option<bool> },
-    // Shutdown,
     Refresh,
 }
 
@@ -67,6 +66,12 @@ pub enum OpComponentCommandType {
     Stopped,
     Priority(OpusId),
 }
+
+pub enum SystemCommand {
+    Quit,
+    RestartServer,
+}
+
 
 // Component Structure ////////////////////////////////////////////////////
 
