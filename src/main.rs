@@ -36,7 +36,9 @@ extern crate machine;
 // use tokio::time::{sleep, Duration};
 use tokio::{sync::mpsc, sync::watch};
 #[allow(unused_imports)] // FIXME remove this when we know what tracing options we need
-use tracing::{debug, error, info, trace, warn};
+use tracing::{debug, error, info, trace, warn, Level};
+use tracing_subscriber::FmtSubscriber;
+
 
 use std::collections::HashMap;
 use std::{thread, time};
@@ -52,12 +54,24 @@ use common::OpResult;
 async fn main() -> ! {
     // Tracing
     // install global collector configured based on RUST_LOG env var.
-    tracing_subscriber::fmt::init();
+    // tracing_subscriber::fmt::init();
+
+    let subscriber = FmtSubscriber::builder()
+        // all spans/events with a level higher than TRACE (e.g, debug, info, warn, etc.)
+        // will be written to stdout.
+        .with_max_level(Level::TRACE)
+        // completes the builder.
+        .finish();
+    
+    tracing::subscriber::set_global_default(subscriber)
+        .expect("setting default subscriber failed");
 
     let settings = match Settings::new() {
         Ok(s) => s,
         Err(e) => std::process::exit(-65) 
     };
+
+
 
     println!("settings: {:?}", &settings);
     
