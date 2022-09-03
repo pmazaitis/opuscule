@@ -4,7 +4,7 @@ pub mod audio;
 pub mod menu; 
 pub mod now_playing;
 
-use crate::settings::Settings;
+// use crate::settings::Settings;
 use crate::common::{OpUICommand, OpUICommandType};
 use menu::Menu;
 use audio::{AudioState, Stop, Pause, Play, Stopped};
@@ -34,12 +34,11 @@ impl State {
         
         println!("Root menu: {:?}", &menu);
         
-        let mut machine = AudioState::Stopped(Stopped {});
+        let machine = AudioState::Stopped(Stopped {});
         
         State{
             menu,
             machine
-            
         }
     }
     pub fn handle_ui_command(&mut self, rc: OpUICommand) -> OpUICommand {

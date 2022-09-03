@@ -1,11 +1,11 @@
 #![allow(dead_code)]
-use rodio::source::SineWave;
+// use rodio::source::SineWave;
 // FIXME remove when done working through the data structures
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
 use uuid::Uuid;
-use trees::Tree;
+// use trees::Tree;
 pub type OpusId = Uuid;
 
 // Messages /////////////////////////////////

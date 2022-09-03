@@ -1,5 +1,5 @@
 
-use crate::state::menu::{Menu, MenuItem,MenuItemKind,MenuId};
+use crate::state::menu::{MenuItem,MenuItemKind,MenuId};
 use trees::{Tree, tr};
 
 pub struct SystemMenu {
