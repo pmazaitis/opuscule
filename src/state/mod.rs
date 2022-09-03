@@ -26,13 +26,20 @@ impl State {
         
         let mut menu = Menu::new();
         
-        // Pull in the opuscule menus
-        let system_menu = SystemMenu::new();
+        // Pull in the opuscule menus, favorites first
         let favorites_menu = FavoritesMenu::new();
         menu.add_component(favorites_menu.get_menu());
+        
+        // Pull in menus for requested components
+        match s {
+            _ =>  {}
+        }
+        
+        // The final menu is the system menu
+        let system_menu = SystemMenu::new();
         menu.add_component(system_menu.get_menu());
         
-        println!("Root menu: {:?}", &menu);
+        // println!("Root menu: {:?}", &menu);
         
         let machine = AudioState::Stopped(Stopped {});
         
@@ -57,6 +64,7 @@ impl State {
             }
             OpUICommandType::Advance => {
                 println!("Got Advance");
+                self.menu.next_child();
             }
             OpUICommandType::Retreat => {
                 println!("Got Retreat");
