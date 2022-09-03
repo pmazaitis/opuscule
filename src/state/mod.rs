@@ -1,3 +1,8 @@
 
-pub mod state_controller;
-pub mod menu;
+pub mod state;
+
+pub mod machine;
+pub mod menu; 
+pub mod now_playing;
+
+

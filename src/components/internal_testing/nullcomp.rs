@@ -2,13 +2,13 @@ use tokio::sync::{mpsc::Sender, watch::Receiver};
 
 use tracing::{debug, error, info, trace, warn};
 
-use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpComponentError, OpStatusMetaData, Component, Playable, OpResult, OpusId};
+use crate::common::{OpComponent, OpComponentCategory, OpComponentCommand, OpComponentError, OpStatusMetaData, AudioComponent, Playable, OpResult, OpusId};
 
 // This is a module to model and test the component system.
 //
 // A component must support the following:
 //
-// - (menu)  Present a menu subtree of available playables on request
+// - (menu)  Present a menu subtree of available nodes on request
 // - (load)  Accept a command to load a playable into the local queue, with a UUID as an argument
 // - (play)  Accept a command to begin playing from the local queue
 // - (stop)  Accept a command to stop playing from the local queue
@@ -55,7 +55,7 @@ pub struct NullCompActorHandler {
     outgoing_status_channel: Sender<String>,
 }
 
-impl Component for NullCompActorHandler {
+impl AudioComponent for NullCompActorHandler {
     fn play() -> OpResult {
         OpResult::OpStatus
     }

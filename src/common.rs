@@ -5,7 +5,8 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
 use uuid::Uuid;
-type OpusSerialId = Uuid;
+use trees::Tree;
+pub type OpusId = Uuid;
 
 // Messages /////////////////////////////////
 
@@ -123,9 +124,9 @@ pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct OpusId {
+pub struct Opus {
     pub(crate) component: OpComponent,
-    pub(crate) id: OpusSerialId,
+    pub(crate) id: OpusId,
 }
 
 
@@ -363,9 +364,10 @@ struct OpStatusIndicators {
     mute: bool,
 }
 
+
 // Traits
 
-pub trait Component {
+pub trait AudioComponent {
     fn play() -> OpResult;
     fn pause() -> OpResult;
     fn stop() -> OpResult;
@@ -375,6 +377,11 @@ pub trait Component {
     fn get_playables_menu() -> Result<String, OpComponentError>;
     // .get_playables_json() -> Result<String, E>
 }
+
+pub trait SystemComponent {
+    fn get_menu() -> Result<String, OpComponentError>;
+}
+
 
 pub trait Playable {
     // fn play() -> OpResult;

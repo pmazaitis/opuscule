@@ -5,9 +5,16 @@ mod clients;
 mod common;
 mod components;
 mod state;
+mod system;
 mod settings;
 
+use settings::Settings;
+
 use rodio::{OutputStream, Sink};
+
+use trees::{Tree, Node};
+
+use state::menu::Menu;
 
 // use components::internal_testing::internal_testing_sine::InternalSine;
 
@@ -17,7 +24,9 @@ use components::internal_testing::nullcomp::NullCompOpus;
 
 use common::OpComponentCommand;
 
-use settings::Settings;
+use system::command::SystemMenu;
+
+use system::favorites::FavoritesMenu;
 
 #[macro_use]
 extern crate machine;
@@ -30,7 +39,7 @@ use tracing::{debug, error, info, trace, warn};
 use std::collections::HashMap;
 use std::{thread, time};
 
-use state::state_controller::Controller;
+use state::machine::Controller;
 
 use common::{OpUICommand, OpUICommandType};
 
@@ -76,6 +85,18 @@ async fn main() -> ! {
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
 
     // Initialize and start components
+
+    let mut root_menu = Menu::new();
+    
+    let system_menu = SystemMenu::new();
+    
+    let favorites_menu = FavoritesMenu::new();
+    
+    root_menu.add_component(favorites_menu.get_menu());
+    
+    root_menu.add_component(system_menu.get_menu());
+    
+    println!("Root menu: {:?}", root_menu);
 
     // Main loop
 
