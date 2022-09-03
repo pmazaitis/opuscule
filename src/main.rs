@@ -14,6 +14,8 @@ use rodio::{OutputStream, Sink};
 
 use trees::{Tree, Node};
 
+use state::State;
+
 use state::menu::Menu;
 
 // use components::internal_testing::internal_testing_sine::InternalSine;
@@ -24,9 +26,9 @@ use components::internal_testing::nullcomp::NullCompOpus;
 
 use common::OpComponentCommand;
 
-use system::command::SystemMenu;
-
-use system::favorites::FavoritesMenu;
+// use system::command::SystemMenu;
+// 
+// use system::favorites::FavoritesMenu;
 
 #[macro_use]
 extern crate machine;
@@ -39,7 +41,7 @@ use tracing::{debug, error, info, trace, warn};
 use std::collections::HashMap;
 use std::{thread, time};
 
-use state::machine::Controller;
+// use state::machine::Controller;
 
 use common::{OpUICommand, OpUICommandType};
 
@@ -57,7 +59,7 @@ async fn main() -> ! {
         Err(e) => std::process::exit(-65) 
     };
 
-    println!("settings: {:?}", settings);
+    println!("settings: {:?}", &settings);
     
     //Channels (move these into modules?)
     // We offer the ui_clients module the tx here, so we can get the commands it receives
@@ -72,9 +74,9 @@ async fn main() -> ! {
     let (internal_cmds_tx, internal_cmds_rx) = watch::channel::<String>(String::from("NOOP"));
 
     // Controller to manage the player state
-    let mut op_controller = Controller::new();
+    let mut op_state = State::new(settings.enabled_components());
 
-    let server_addr = "127.0.0.1:8080".to_string();
+    // let server_addr = "127.0.0.1:8080".to_string();
 
     // Spin up UI server to handle user interface clients connecting over the net
     let ui_client_controller =
@@ -86,17 +88,17 @@ async fn main() -> ! {
 
     // Initialize and start components
 
-    let mut root_menu = Menu::new();
-    
-    let system_menu = SystemMenu::new();
-    
-    let favorites_menu = FavoritesMenu::new();
-    
-    root_menu.add_component(favorites_menu.get_menu());
-    
-    root_menu.add_component(system_menu.get_menu());
-    
-    println!("Root menu: {:?}", root_menu);
+    // let mut root_menu = Menu::new();
+    // 
+    // let system_menu = SystemMenu::new();
+    // 
+    // let favorites_menu = FavoritesMenu::new();
+    // 
+    // root_menu.add_component(favorites_menu.get_menu());
+    // 
+    // root_menu.add_component(system_menu.get_menu());
+    // 
+    // println!("Root menu: {:?}", root_menu);
 
     // Main loop
 
@@ -109,8 +111,7 @@ async fn main() -> ! {
                 debug!("Sending test to internal command channel");
                 internal_cmds_tx.send("test".to_string());
 
-
-                let status = op_controller.handle_command(rec_command);
+                let status = op_state.handle_ui_command(rec_command);
 
                 let status_ser = serde_json::to_string(&status).unwrap();
 

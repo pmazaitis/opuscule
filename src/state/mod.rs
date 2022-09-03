@@ -7,8 +7,9 @@ pub mod now_playing;
 use crate::settings::Settings;
 use crate::common::{OpUICommand, OpUICommandType};
 use menu::Menu;
-use audio::{AudioState, Stop, Pause, Play};
-
+use audio::{AudioState, Stop, Pause, Play, Stopped};
+use crate::system::command::SystemMenu;
+use crate::system::favorites::FavoritesMenu;
 
 pub struct State {
     menu: Menu,
@@ -16,10 +17,28 @@ pub struct State {
 }
 
 impl State {
-    pub fn new(&s: &Settings) -> Self {
-        State{}
+    pub fn new(s: String) -> Self {
+        // use settings to establish which components we have
+        
+        let mut menu = Menu::new();
+        
+        // Pull in the opuscule menus
+        let system_menu = SystemMenu::new();
+        let favorites_menu = FavoritesMenu::new();
+        menu.add_component(favorites_menu.get_menu());
+        menu.add_component(system_menu.get_menu());
+        
+        println!("Root menu: {:?}", &menu);
+        
+        let mut machine = AudioState::Stopped(Stopped {});
+        
+        State{
+            menu,
+            machine
+            
+        }
     }
-    pub fn handle_command(&mut self, rc: OpUICommand) -> OpUICommand {
+    pub fn handle_ui_command(&mut self, rc: OpUICommand) -> OpUICommand {
         match rc.command {
             OpUICommandType::Play => {
                 println!("Got Play");

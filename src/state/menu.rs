@@ -67,11 +67,11 @@ impl Menu {
       //find ID of first child, add it to menu cursor
       self.cursor.push(self.tree.front().unwrap().data().get_menuitem_id());
     }
-    
-    fn get_menu_item_under_cursor(&self) -> MenuItem {
-      // 
-    }
-    
+    // TODO: next for menu
+    // fn get_menu_item_under_cursor(&self) -> MenuItem {
+    //   // 
+    // }
+    // 
     pub fn next_child(&mut self) -> Result<String, MenuError> {
       //Manipulate cursor
       Err(MenuError::OutOfBounds)

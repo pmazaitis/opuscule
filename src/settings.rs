@@ -35,5 +35,8 @@ impl Settings {
     }
     pub fn server_addr(&self) -> String {
         format!("{}:{}",&self.network.host_ip.to_string(),&self.network.host_port.to_string()) 
+    }
+    pub fn enabled_components(&self) -> String {
+        "all".to_string()
     }  
 }
