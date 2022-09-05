@@ -4,7 +4,7 @@ use tracing::{debug, error, info, trace, warn};
 // use crate::common::{OpUICommand, OpUICommandType};
 // use rodio::{Decoder, OutputStream, OutputStreamHandle, Sink};
 
-trait Opus {}
+trait Opus {} // TODO remove
 
 machine!(
     #[derive(Clone, Debug, PartialEq, Copy)]
@@ -38,6 +38,12 @@ transitions!(AudioState,
   ]
 );
 
+methods!(AudioState,
+  [
+    Playing, Paused, Stopped => fn get_state(&self) -> String
+  ]
+);
+
 impl Playing {
     pub fn on_pause(self, _: Pause) -> AudioState {
         // FIXME - test if current Opus is pausable to determine how this branches
@@ -57,6 +63,9 @@ impl Playing {
         debug!("Maintaining Playing inside the machine");
         Playing {}
     }
+    pub fn get_state(&self) -> String {
+      "Playing".to_string()
+    }
 }
 
 impl Paused {
@@ -71,6 +80,9 @@ impl Paused {
     pub fn on_pause(self, _: Pause) -> Paused {
         debug!("Maintaining Paused inside the machine");
         Paused {}
+    }
+    pub fn get_state(&self) -> String {
+      "Paused".to_string()
     }
 }
 
@@ -87,7 +99,12 @@ impl Stopped {
         debug!("Maintaining Stopped inside the machine");
         Stopped {}
     }
+    pub fn get_state(&self) -> String {
+      "Stopped".to_string()
+    }
 }
+
+
 
 // pub struct Controller {
 //     state: AudioState,

@@ -5,7 +5,7 @@ pub mod menu;
 pub mod now_playing;
 
 // use crate::settings::Settings;
-use crate::common::{OpUICommand, OpUICommandType};
+use crate::common::{OpUICommand, OpUICommandType, OpResult, OpStatus, OpPlayState};
 use menu::Menu;
 use audio::{AudioState, Stop, Pause, Play, Stopped};
 use crate::system::command::SystemMenu;
@@ -21,7 +21,7 @@ pub struct State {
 }
 
 impl State {
-    pub fn new(s: String) -> Self {
+    pub fn new(_s: String) -> Self {
         // use settings to establish which components we have
         
         let mut menu = Menu::new();
@@ -31,15 +31,18 @@ impl State {
         menu.add_component(favorites_menu.get_menu());
         
         // Pull in menus for requested components
-        match s {
-            _ =>  {}
-        }
+        // match s {
+        //     _ =>  {}
+        // }
         
         // The final menu is the system menu
         let system_menu = SystemMenu::new();
         menu.add_component(system_menu.get_menu());
         
         // println!("Root menu: {:?}", &menu);
+        // menu.show_children();
+        println!("*** Menu Status\n{:?}", menu.get_menu_status());
+        
         
         let machine = AudioState::Stopped(Stopped {});
         
@@ -64,16 +67,19 @@ impl State {
             }
             OpUICommandType::Advance => {
                 println!("Got Advance");
-                self.menu.next_child();
+                self.menu.next_child().unwrap();
             }
             OpUICommandType::Retreat => {
                 println!("Got Retreat");
+                self.menu.previous_child().unwrap();
             }
             OpUICommandType::Select => {
                 println!("Got Select");
+                self.menu.select_child().unwrap();
             }
             OpUICommandType::Escape => {
                 println!("Got Escape");
+                self.menu.escape_to_parent().unwrap();
             }
             OpUICommandType::Favorite { slot: favid } => {
                 println!("Got Fav: {}", favid);
@@ -107,6 +113,17 @@ impl State {
             }
         }
         rc
+    }
+    
+    fn generate_status(self) -> OpStatus {
+        
+        let playstate = OpPlayState {audio: self.machine.get_state().unwrap()};
+        let menu = self.menu.get_menu_status();
+        
+        OpStatus::new(
+            playstate, menu
+        )
+        
     }
 
 }

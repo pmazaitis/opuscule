@@ -3,10 +3,11 @@
 // FIXME remove when done working through the data structures
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
-
 use uuid::Uuid;
 // use trees::Tree;
 pub type OpusId = Uuid;
+
+use crate::state::menu::MenuStatus;
 
 // Messages /////////////////////////////////
 
@@ -140,14 +141,22 @@ pub enum OpResult {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct OpStatus {
+pub struct OpStatus {
     playstate: OpPlayState,
-    messages: Vec<OpMessage>,
-    errors: Vec<OpError>,
-    menu: OpStatusMenu,
-    now_playing: OpStatusMetaData,
-    volume: OpStatusVolume,
-    indicators: OpStatusIndicators,
+    // messages: Vec<OpMessage>,
+    // errors: Vec<OpError>,
+    menu: MenuStatus,
+    // now_playing: OpStatusMetaData,
+    // volume: OpStatusVolume,
+    // indicators: OpStatusIndicators,
+}
+
+impl OpStatus {
+    pub fn new(playstate: OpPlayState, menu: MenuStatus) -> Self {
+        OpStatus {
+            playstate, menu
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -156,7 +165,11 @@ pub enum OpusType {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct OpPlayState {}
+pub struct OpPlayState {
+    pub audio: String,
+}
+
+
 
 #[derive(Serialize, Deserialize, Debug)]
 struct OpMessage {}
