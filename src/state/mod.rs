@@ -15,7 +15,7 @@ use crate::system::favorites::FavoritesMenu;
 // 
 // use components::internal_testing::nullcomp::NullCompOpus;
 
-pub struct State {
+pub struct State{
     menu: Menu,
     machine: AudioState,
 }
@@ -43,6 +43,7 @@ impl State {
         // menu.show_children();
         println!("*** Menu Status\n{:?}", menu.get_menu_status());
         
+        menu.get_menu_child_node();
         
         let machine = AudioState::Stopped(Stopped {});
         

@@ -20,7 +20,7 @@ machine = "0.3"
 config = "0.13"
 uuid = { version = "1.1.2", features = ["v4", "fast-rng", "macro-diagnostics", "serde"] }
 trees = "0.4.2"
-
+itertools = "0.10.3"
 
 
 
