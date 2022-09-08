@@ -78,11 +78,7 @@ impl Menu {
       // self.cursor.push(self.tree.front().unwrap().data().get_menuitem_id());
       self.path = vec![0,0];
     }
-    // TODO: next for menu
-    // fn get_menu_item_under_cursor(&self) -> MenuItem {
-    //   // 
-    // }
-    // 
+
     pub fn next_child(&mut self) -> Result<String, MenuError> {     
       if *self.path.last().unwrap() < (self.get_current_menu_node().degree() as u32 - 1) {
         let pathfinal = self.path.last_mut().unwrap();
