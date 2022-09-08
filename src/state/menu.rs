@@ -47,15 +47,16 @@ impl MenuItem {
 
 #[derive(Serialize, Deserialize, Debug)]pub struct MenuStatus {
   menu_labels: Vec<String>,
-  cursor_index: usize,
+  cursor_index: u32,
 }
 
 #[derive(Debug)]
 pub(crate) struct Menu {
     pub tree: Tree<MenuItem>,
     pub cursor: Vec<MenuId>,
-    pub path: Vec<usize>
+    pub path: Vec<u32>
 }
+
 
 impl Menu {
     pub fn new() -> Self {
@@ -84,7 +85,13 @@ impl Menu {
     // 
     pub fn next_child(&mut self) -> Result<String, MenuError> {
       // use the .degree() method on a node to make sure we don't go out of bounds
-      Err(MenuError::OutOfBounds)
+      if *self.path.last().unwrap() == self.get_current_menu_node().degree() as u32 {
+        Err(MenuError::OutOfBounds)
+      } else {
+        let pathfinal = self.path.last_mut().unwrap();
+        *pathfinal += 1;
+        Ok("Menu advanced".to_string())
+      }
     }
     
     pub fn previous_child(&mut self) -> Result<String, MenuError> {
@@ -101,36 +108,8 @@ impl Menu {
       // check if path has at least 2 elements
       Err(MenuError::OutOfBounds)
     }
-    
-    
-    
-    
-    // fn get_menu_item_from_id(&self, menu_id) -> &MenuItem {
-    //   if self.tree.has_no_child() {
-    //     return self.tree.root().data();
-    //   } else {
-    //     
-    //   }
-    // }
-    // fn get_menu_item_from_id(&self, node: Option<Node<MenuItem>>, menu_id: MenuId) -> &Node<MenuItem> {
-    //   let n = match node {
-    //     Some(m) => m,
-    //     None => {let nr = self.tree.root().clone(); return nr;},
-    //   };
-    //   
-    //   
-    //   for c in n.iter() {
-    //     if c.data().id == menu_id {
-    //       return c;
-    //     } else {
-    //       let nc = *c.clone();
-    //       self.get_menu_item_from_id(Some(nc), menu_id);
-    //     }
-    //   }
-    //   return self.tree.root();
-    // }
-    
-    pub fn get_menu_child_node(&self)  {
+
+    pub fn get_current_menu_node(&self) -> &Node<MenuItem> {
       // This one is working - maybe we don't need IDs?
       let menu_node = self.tree.root();
       
@@ -138,14 +117,17 @@ impl Menu {
        
       for (m, c) in self.path.iter().tuple_windows() {
           println!("{}--{}", &m, &c);
-          let child_index = c;
-          self.print_menu(menu_node, *child_index);
+          // let child_index = c;
+          // self.print_menu(menu_node);
           let menu_node = ns.next().unwrap();
-      }       
+      } 
+      menu_node      
     }
     
-    fn print_menu(&self, mi:&Node<MenuItem>, idx: usize) {
+    fn print_menu(&self, mi:&Node<MenuItem>) {
       let mut menu_labels = Vec::new();
+      let idx = self.get_current_menu_node().degree() as u32;
+      
       
       for c in mi.iter() {
         menu_labels.push(c.data().label.clone());
