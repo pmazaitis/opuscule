@@ -6,6 +6,8 @@ use std::net::SocketAddr;
 use uuid::Uuid;
 // use trees::Tree;
 pub type OpusId = Uuid;
+use std::fmt;
+
 
 use crate::state::menu::MenuStatus;
 
@@ -78,7 +80,7 @@ pub enum SystemCommand {
 // Component Structure ////////////////////////////////////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub enum OpComponentCategory {
+pub enum ComponentCategory {
     System,
     Testing,
     Library,
@@ -86,6 +88,20 @@ pub enum OpComponentCategory {
     Soundscape,
     Radio,
 }
+impl fmt::Display for ComponentCategory {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ComponentCategory::System => write!(f, "System"),
+            ComponentCategory::Testing => write!(f, "Testing"),
+            ComponentCategory::Library => write!(f, "Library"),
+            ComponentCategory::Stream => write!(f, "Stream"),
+            ComponentCategory::Soundscape => write!(f, "Soundscape"),
+            ComponentCategory::Radio => write!(f, "Radio"),
+        }
+    }
+}
+
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OpComponent {
     Opuscule,
@@ -103,23 +119,23 @@ pub enum OpComponent {
     WX,
 }
 
-pub fn get_component_category(opcomp: OpComponent) -> OpComponentCategory {
-    match opcomp {
-        OpComponent::Opuscule => OpComponentCategory::System,
-        OpComponent::NullComp => OpComponentCategory::Testing,
-        OpComponent::SineWave => OpComponentCategory::Testing,
-        OpComponent::Mp3 => OpComponentCategory::Testing,
-        OpComponent::Local => OpComponentCategory::Library,
-        OpComponent::Subsonic => OpComponentCategory::Library,
-        OpComponent::Custom => OpComponentCategory::Stream,
-        OpComponent::Shoutcast => OpComponentCategory::Stream,
-        OpComponent::Spotify => OpComponentCategory::Stream,
-        OpComponent::Oobler => OpComponentCategory::Soundscape,
-        OpComponent::Boodler => OpComponentCategory::Soundscape,
-        OpComponent::FM => OpComponentCategory::Radio,
-        OpComponent::WX => OpComponentCategory::Radio,
-    }
-}
+// pub fn get_component_category(opcomp: OpComponent) -> Category {
+//     match opcomp {
+//         OpComponent::Opuscule => Category::System,
+//         OpComponent::NullComp => Category::Testing,
+//         OpComponent::SineWave => Category::Testing,
+//         OpComponent::Mp3 => Category::Testing,
+//         OpComponent::Local => Category::Library,
+//         OpComponent::Subsonic => Category::Library,
+//         OpComponent::Custom => Category::Stream,
+//         OpComponent::Shoutcast => Category::Stream,
+//         OpComponent::Spotify => Category::Stream,
+//         OpComponent::Oobler => Category::Soundscape,
+//         OpComponent::Boodler => Category::Soundscape,
+//         OpComponent::FM => Category::Radio,
+//         OpComponent::WX => Category::Radio,
+//     }
+// }
 
 // Opus Structure //////////////////////
 
