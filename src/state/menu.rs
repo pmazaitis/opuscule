@@ -6,11 +6,16 @@
 //
 // 
 
+// TODOs
+//
+// Have a select put a command on the internal command bus (can be a NOOP)
+
+
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use crate::common::OpusId;
+use crate::common::{OpusId, ComponentCategory};
 use trees::{Tree, Node};
-use uuid::Uuid;
+use std::fmt;
 
 // Menu
 
@@ -19,30 +24,38 @@ pub enum MenuError {
   OutOfBounds,
 }
 
-pub type MenuId = Uuid;
-
 #[derive(Debug)]
-pub enum MenuItemKind {
+pub enum MenuItem {
     Root,
-    Text,            
-    Opus{id:OpusId},         
-    SystemCommand    
+    Category(ComponentCategory),
+    Text{label: String},            
+    Opus{label: String, id:OpusId},         
+    SystemCommand{label: String}   
 }
 
-#[derive(Debug)]
-pub struct MenuItem {
-  kind: MenuItemKind,
-  label: String,
-  id: MenuId
-}
 
 impl MenuItem {
-    pub fn new(kind: MenuItemKind, label:String, id: MenuId) -> Self {
-        MenuItem{kind, label, id}
+    pub fn get_label(&self) -> String {
+      match self {
+        MenuItem::Root                    => "".to_string(),
+        MenuItem::Category (c)              => c.to_string(),
+        MenuItem::Text { label }          => label.to_string(),
+        MenuItem::Opus { label, id }      => label.to_string(),
+        MenuItem::SystemCommand { label } => label.to_string(),
+      }
     }
-    pub fn get_menuitem_id(&self) -> MenuId {
-      self.id
+}
+
+impl fmt::Display for MenuItem {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match self {
+      MenuItem::Root                    => write!(f, ""),
+      MenuItem::Category(c)               => c.to_string(),
+      MenuItem::Text { label }          => label.to_string(),
+      MenuItem::Opus { label, id }      => label.to_string(),
+      MenuItem::SystemCommand { label } => label.to_string(),
     }
+  }
 }
 
 #[derive(Serialize, Deserialize, Debug)]pub struct MenuStatus {
@@ -53,29 +66,23 @@ impl MenuItem {
 #[derive(Debug)]
 pub(crate) struct Menu {
     pub tree: Tree<MenuItem>,
-    pub cursor: Vec<MenuId>,
     pub path: Vec<u32>
 }
 
 
 impl Menu {
     pub fn new() -> Self {
-        let id = MenuId::new_v4();
-        let tree = Tree::new(MenuItem{kind: MenuItemKind::Root, label: "ROOT".to_string(), id});
-        Menu{tree, cursor: vec![id], path: vec![0]}
-
+        let tree = Tree::new(MenuItem::Root);
+        Menu{tree, path: vec![0]}
     }
     
     pub fn add_component(&mut self, st: Tree<MenuItem>) {
+      // Todo: sort into categories based in componnetn's choice
       self.tree.push_back(st);
-      self.initialize_cursor();
+      self.initialize_path();
     }
     
-    fn initialize_cursor(&mut self) {
-      // Preserve root node
-      self.cursor.truncate(1);      
-      //find ID of first child, add it to menu cursor
-      // self.cursor.push(self.tree.front().unwrap().data().get_menuitem_id());
+    fn initialize_path(&mut self) {     
       self.path = vec![0,0];
     }
 
@@ -133,7 +140,8 @@ impl Menu {
       
       
       for c in mi.iter() {
-        menu_labels.push(c.data().label.clone());
+        
+        menu_labels.push(c.data().get_label());
       }
       
       println!("Index: {}, Menu: {:?}",idx, menu_labels);
@@ -143,7 +151,7 @@ impl Menu {
       let mut menu_labels = Vec::new();
       
       for c in self.tree.iter() {
-        menu_labels.push(c.data().label.clone());
+        menu_labels.push(c.data().get_label());
       }
       
       MenuStatus {
