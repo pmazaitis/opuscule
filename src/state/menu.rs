@@ -83,20 +83,27 @@ impl Menu {
     //   // 
     // }
     // 
-    pub fn next_child(&mut self) -> Result<String, MenuError> {
-      // use the .degree() method on a node to make sure we don't go out of bounds
-      if *self.path.last().unwrap() == self.get_current_menu_node().degree() as u32 {
-        Err(MenuError::OutOfBounds)
-      } else {
+    pub fn next_child(&mut self) -> Result<String, MenuError> {     
+      if *self.path.last().unwrap() < (self.get_current_menu_node().degree() as u32 - 1) {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal += 1;
+        self.print_menu(self.get_current_menu_node());
         Ok("Menu advanced".to_string())
+      } else {
+        Err(MenuError::OutOfBounds)
       }
     }
     
     pub fn previous_child(&mut self) -> Result<String, MenuError> {
       // Error if last element in child index is 0
-      Err(MenuError::OutOfBounds)
+      if *self.path.last().unwrap() > 0 {
+        let pathfinal = self.path.last_mut().unwrap();
+        *pathfinal -= 1;
+        self.print_menu(self.get_current_menu_node());
+        Ok("Menu retreated".to_string())
+      } else {
+        Err(MenuError::OutOfBounds)
+      }
     }
     
     pub fn select_child(&mut self) -> Result<String, MenuError> {
@@ -126,7 +133,7 @@ impl Menu {
     
     fn print_menu(&self, mi:&Node<MenuItem>) {
       let mut menu_labels = Vec::new();
-      let idx = self.get_current_menu_node().degree() as u32;
+      let idx = self.path.last().unwrap();
       
       
       for c in mi.iter() {

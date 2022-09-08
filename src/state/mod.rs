@@ -47,6 +47,14 @@ impl State {
         
         menu.next_child();
         
+        menu.next_child();
+        
+        menu.next_child();
+        
+        menu.previous_child();
+        
+        menu.next_child();
+        
         menu.get_current_menu_node();
         
         println!("*** Menu Status\n{:?}", menu.get_menu_status());
