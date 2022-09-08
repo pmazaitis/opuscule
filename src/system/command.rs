@@ -1,5 +1,5 @@
 
-use crate::state::menu::{MenuItem,MenuItemKind,MenuId};
+use crate::state::menu::{MenuItem};
 use trees::{Tree, tr};
 
 pub struct SystemMenu {
@@ -13,10 +13,10 @@ impl SystemMenu {
     pub fn get_menu(self) -> Tree<MenuItem> {
         // let id = MenuId::new_v4();
         // Tree::new(MenuItem::new(MenuItemKind::Text, "System".to_string(), id));
-        tr(MenuItem::new(MenuItemKind::Text, "System".to_string(),MenuId::new_v4()))
+        tr(MenuItem::Text{label: "System".to_string()})
             /( 
-               tr(MenuItem::new(MenuItemKind::SystemCommand, "Reset".to_string(),MenuId::new_v4()))
-              /tr(MenuItem::new(MenuItemKind::SystemCommand, "Shutdown".to_string(),MenuId::new_v4()))
+               tr(MenuItem::SystemCommand { label: "Restart".to_string() })
+              /tr(MenuItem::SystemCommand { label: "Shutdown".to_string() })
             )
     }
 }
