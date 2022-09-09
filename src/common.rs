@@ -69,7 +69,7 @@ pub enum OpInternalCommandType {
     ClearOpus,
     Reload,
     ClearQueue,
-    Noop,
+    NOOP,
 }
 
 #[derive(Debug, Clone)]
@@ -132,6 +132,8 @@ pub enum OpComponent {
     Boodler,
     FM,
     WX,
+    ALL,
+    NONE
 }
 
 // pub fn get_component_category(opcomp: OpComponent) -> Category {
