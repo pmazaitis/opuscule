@@ -69,7 +69,7 @@ pub enum OpInternalCommandType {
     ClearOpus,
     Reload,
     ClearQueue,
-    NOOP,
+    Noop,
 }
 
 #[derive(Debug, Clone)]
