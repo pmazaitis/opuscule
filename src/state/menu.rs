@@ -37,9 +37,9 @@ impl fmt::Display for MenuItem {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       MenuItem::Root                    => write!(f, ""),
-      MenuItem::Category(c)               => write!(f, "{}",c),
+      MenuItem::Category(c)             => write!(f, "{}",c),
       MenuItem::Text { label }          => write!(f, "{}",label),
-      MenuItem::Opus { label, id: _ }      => write!(f, "{}",label),
+      MenuItem::Opus { label, id: _ }   => write!(f, "{}",label),
       MenuItem::SystemCommand { label } => write!(f, "{}",label),
     }
   }
@@ -48,6 +48,24 @@ impl fmt::Display for MenuItem {
 #[derive(Serialize, Deserialize, Debug)]pub struct MenuStatus {
   menu_labels: Vec<String>,
   cursor_index: u32,
+}
+
+impl fmt::Display for MenuStatus {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    let mut output = String::new();
+    for (i, s) in self.menu_labels.iter().enumerate() {
+        if i as u32 != self.cursor_index {
+          output += " ";
+          output += s;
+          output += " ";
+        } else {
+          output += ">";
+          output += s;
+          output += "<";
+        }
+    }
+    write!(f, "{}", output)
+  }
 }
 
 #[derive(Debug)]
@@ -77,7 +95,8 @@ impl Menu {
       if *self.path.last().unwrap() < (self.get_current_menu_node().degree() as u32 - 1) {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal += 1;
-        self.print_menu(self.get_current_menu_node());
+        // self.print_menu(self.get_current_menu_node());
+        println!("{}", self.get_menu_status());
         Ok("Menu advanced".to_string())
       } else {
         Err(MenuError::OutOfBounds)
@@ -89,7 +108,8 @@ impl Menu {
       if *self.path.last().unwrap() > 0 {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal -= 1;
-        self.print_menu(self.get_current_menu_node());
+        // self.print_menu(self.get_current_menu_node());
+        println!("{}", self.get_menu_status());
         Ok("Menu retreated".to_string())
       } else {
         Err(MenuError::OutOfBounds)
@@ -121,18 +141,18 @@ impl Menu {
       menu_node      
     }
     
-    fn print_menu(&self, mi:&Node<MenuItem>) {
-      let mut menu_labels = Vec::new();
-      let idx = self.path.last().unwrap();
-      
-      
-      for c in mi.iter() {
-        
-        menu_labels.push(c.data().to_string());
-      }
-      
-      println!("Index: {}, Menu: {:?}",idx, menu_labels);
-    }
+    // fn print_menu(&self, mi:&Node<MenuItem>) {
+    //   let mut menu_labels = Vec::new();
+    //   let idx = self.path.last().unwrap();
+    //   
+    //   
+    //   for c in mi.iter() {
+    //     
+    //     menu_labels.push(c.data().to_string());
+    //   }
+    //   
+    //   println!("Index: {}, Menu: {:?}",idx, menu_labels);
+    // }
     
     pub fn get_menu_status(&self) -> MenuStatus {
       let mut menu_labels = Vec::new();
