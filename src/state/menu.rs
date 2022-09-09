@@ -13,7 +13,7 @@
 
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use crate::common::{OpusId, ComponentCategory};
+use crate::common::{OpusId, ComponentCategory, OpInternalCommand};
 use trees::{Tree, Node};
 use std::fmt;
 
@@ -33,27 +33,14 @@ pub enum MenuItem {
     SystemCommand{label: String}   
 }
 
-
-impl MenuItem {
-    pub fn get_label(&self) -> String {
-      match self {
-        MenuItem::Root                    => "".to_string(),
-        MenuItem::Category (c)              => c.to_string(),
-        MenuItem::Text { label }          => label.to_string(),
-        MenuItem::Opus { label, id }      => label.to_string(),
-        MenuItem::SystemCommand { label } => label.to_string(),
-      }
-    }
-}
-
 impl fmt::Display for MenuItem {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       MenuItem::Root                    => write!(f, ""),
-      MenuItem::Category(c)               => c.to_string(),
-      MenuItem::Text { label }          => label.to_string(),
-      MenuItem::Opus { label, id }      => label.to_string(),
-      MenuItem::SystemCommand { label } => label.to_string(),
+      MenuItem::Category(c)               => write!(f, "{}",c),
+      MenuItem::Text { label }          => write!(f, "{}",label),
+      MenuItem::Opus { label, id: _ }      => write!(f, "{}",label),
+      MenuItem::SystemCommand { label } => write!(f, "{}",label),
     }
   }
 }
@@ -141,7 +128,7 @@ impl Menu {
       
       for c in mi.iter() {
         
-        menu_labels.push(c.data().get_label());
+        menu_labels.push(c.data().to_string());
       }
       
       println!("Index: {}, Menu: {:?}",idx, menu_labels);
@@ -151,7 +138,7 @@ impl Menu {
       let mut menu_labels = Vec::new();
       
       for c in self.tree.iter() {
-        menu_labels.push(c.data().get_label());
+        menu_labels.push(c.data().to_string());
       }
       
       MenuStatus {

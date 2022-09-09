@@ -46,17 +46,30 @@ pub struct OpInternalCommand {
     pub command: OpInternalCommandType,
 }
 
+// #[derive(Debug, Clone)]
+// pub enum OpInternalCommandType {
+//     Pause,
+//     Play,
+//     GetCatalog,
+//     Load { id: OpusId },
+//     ClearOpus,
+//     Reload,
+//     ClearQueue,
+//     Repeat(Option<bool>),
+//     Shuffle(Option<bool>),
+//     Noop,
+// }
+
+// These are commands on the internal bus; things components can send back to the system, or things that are in menus?
 #[derive(Debug, Clone)]
 pub enum OpInternalCommandType {
     Pause,
     Play,
-    GetCatalog,
     Load { id: OpusId },
     ClearOpus,
     Reload,
     ClearQueue,
-    Repeat(Option<bool>),
-    Shuffle(Option<bool>),
+    Noop,
 }
 
 #[derive(Debug, Clone)]
@@ -87,6 +100,7 @@ pub enum ComponentCategory {
     Stream,
     Soundscape,
     Radio,
+    Favorites
 }
 impl fmt::Display for ComponentCategory {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -97,6 +111,7 @@ impl fmt::Display for ComponentCategory {
             ComponentCategory::Stream => write!(f, "Stream"),
             ComponentCategory::Soundscape => write!(f, "Soundscape"),
             ComponentCategory::Radio => write!(f, "Radio"),
+            ComponentCategory::Favorites => write!(f, "Favorites"),
         }
     }
 }
