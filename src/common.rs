@@ -132,8 +132,8 @@ pub enum OpComponent {
     Boodler,
     FM,
     WX,
-    ALL,
-    NONE
+    All,
+    None
 }
 
 // pub fn get_component_category(opcomp: OpComponent) -> Category {
