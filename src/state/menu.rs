@@ -13,7 +13,7 @@
 
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use crate::common::{OpusId, ComponentCategory, OpInternalCommand};
+use crate::common::{OpusId, ComponentCategory, OpInternalCommand, OpInternalCommandType, OpComponent};
 use trees::{Tree, Node};
 use std::fmt;
 
@@ -91,26 +91,26 @@ impl Menu {
       self.path = vec![0,0];
     }
 
-    pub fn next_child(&mut self) -> Result<String, MenuError> {     
+    pub fn next_child(&mut self) -> Result<OpInternalCommand, MenuError> {     
       if *self.path.last().unwrap() < (self.get_current_menu_node().degree() as u32 - 1) {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal += 1;
         // self.print_menu(self.get_current_menu_node());
         println!("{}", self.get_menu_status());
-        Ok("Menu advanced".to_string())
+        Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
       } else {
         Err(MenuError::OutOfBounds)
       }
     }
     
-    pub fn previous_child(&mut self) -> Result<String, MenuError> {
+    pub fn previous_child(&mut self) -> Result<OpInternalCommand, MenuError> {
       // Error if last element in child index is 0
       if *self.path.last().unwrap() > 0 {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal -= 1;
         // self.print_menu(self.get_current_menu_node());
         println!("{}", self.get_menu_status());
-        Ok("Menu retreated".to_string())
+        Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
       } else {
         Err(MenuError::OutOfBounds)
       }
@@ -126,7 +126,7 @@ impl Menu {
       Err(MenuError::OutOfBounds)
     }
 
-    pub fn get_current_menu_node(&self) -> &Node<MenuItem> {
+    fn get_current_menu_node(&self) -> &Node<MenuItem> {
       // This one is working - maybe we don't need IDs?
       let menu_node = self.tree.root();
       
@@ -140,19 +140,6 @@ impl Menu {
       } 
       menu_node      
     }
-    
-    // fn print_menu(&self, mi:&Node<MenuItem>) {
-    //   let mut menu_labels = Vec::new();
-    //   let idx = self.path.last().unwrap();
-    //   
-    //   
-    //   for c in mi.iter() {
-    //     
-    //     menu_labels.push(c.data().to_string());
-    //   }
-    //   
-    //   println!("Index: {}, Menu: {:?}",idx, menu_labels);
-    // }
     
     pub fn get_menu_status(&self) -> MenuStatus {
       let mut menu_labels = Vec::new();
