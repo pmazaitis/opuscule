@@ -41,23 +41,28 @@ impl State {
         
         // println!("Root menu: {:?}", &menu);
         // menu.show_children();
-        println!("*** Menu Status\n{:?}", menu.get_menu_status());
         
-        menu.get_current_menu_node();
-        
-        menu.next_child();
+        println!("*** Menu Status: {}",menu.get_menu_status());
         
         menu.next_child();
         
+        println!("*** Menu Status: {}",menu.get_menu_status());
+        
         menu.next_child();
+        
+        println!("*** Menu Status: {}",menu.get_menu_status());
+        
+        menu.next_child();
+        
+        println!("*** Menu Status: {}",menu.get_menu_status());
         
         menu.previous_child();
         
+        println!("*** Menu Status: {}",menu.get_menu_status());
+        
         menu.next_child();
         
-        menu.get_current_menu_node();
-        
-        println!("*** Menu Status\n{:?}", menu.get_menu_status());
+        println!("*** Menu Status: {}",menu.get_menu_status());
         
         let machine = AudioState::Stopped(Stopped {});
         

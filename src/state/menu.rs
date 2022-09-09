@@ -8,7 +8,7 @@
 
 // TODOs
 //
-// Have a select put a command on the internal command bus (can be a NOOP)
+// Reorganize this
 
 
 use itertools::Itertools;
@@ -127,13 +127,12 @@ impl Menu {
     }
 
     fn get_current_menu_node(&self) -> &Node<MenuItem> {
-      // This one is working - maybe we don't need IDs?
       let menu_node = self.tree.root();
       
       let mut ns = self.tree.root().iter();
        
       for (m, c) in self.path.iter().tuple_windows() {
-          println!("{}--{}", &m, &c);
+          // println!("{}--{}", &m, &c);
           // let child_index = c;
           // self.print_menu(menu_node);
           let menu_node = ns.next().unwrap();
