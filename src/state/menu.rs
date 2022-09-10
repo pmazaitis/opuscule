@@ -14,6 +14,7 @@
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use crate::common::{OpusId, ComponentCategory, OpInternalCommand, OpInternalCommandType, OpComponent};
+use crate::system::command::SystemCommandType;
 use trees::{Tree, Node};
 use std::fmt;
 
@@ -30,17 +31,17 @@ pub enum MenuItem {
     Category(ComponentCategory),
     Text{label: String},            
     Opus{label: String, id:OpusId},         
-    SystemCommand{label: String}   
+    SystemCommand(SystemCommandType)  
 }
 
 impl fmt::Display for MenuItem {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     match self {
       MenuItem::Root                    => write!(f, ""),
-      MenuItem::Category(c)             => write!(f, "{}",c),
-      MenuItem::Text { label }          => write!(f, "{}",label),
-      MenuItem::Opus { label, id: _ }   => write!(f, "{}",label),
-      MenuItem::SystemCommand { label } => write!(f, "{}",label),
+      MenuItem::Category(c)             => write!(f, "{}", c),
+      MenuItem::Text { label }          => write!(f, "{}", label),
+      MenuItem::Opus { label, id: _ }   => write!(f, "{}", label),
+      MenuItem::SystemCommand(sct)      => write!(f, "{}", sct)
     }
   }
 }
@@ -95,8 +96,6 @@ impl Menu {
       if *self.path.last().unwrap() < (self.get_current_menu_node().degree() as u32 - 1) {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal += 1;
-        // self.print_menu(self.get_current_menu_node());
-        println!("{}", self.get_menu_status());
         Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
       } else {
         Err(MenuError::OutOfBounds)
@@ -108,8 +107,6 @@ impl Menu {
       if *self.path.last().unwrap() > 0 {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal -= 1;
-        // self.print_menu(self.get_current_menu_node());
-        println!("{}", self.get_menu_status());
         Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
       } else {
         Err(MenuError::OutOfBounds)
@@ -152,6 +149,12 @@ impl Menu {
         cursor_index: self.path.last().copied().unwrap()
       }
     }
-
+    
+    pub fn add_favorite(op: OpusId) {
+      
+    }
+    pub fn remove_favorite(op: OpusId) {
+      
+    }
 }
 
