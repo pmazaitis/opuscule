@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use uuid::Uuid;
 // use trees::Tree;
-pub type OpusId = Uuid;
+pub type OpusUuid = Uuid;
 use std::fmt;
 
 
@@ -84,12 +84,6 @@ pub enum OpComponentCommandType {
     Priority(OpusId),
 }
 
-pub enum SystemCommand {
-    Quit,
-    RestartServer,
-}
-
-
 // Component Structure ////////////////////////////////////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -158,9 +152,9 @@ pub enum OpComponent {
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Opus {
+pub struct OpusId {
     pub(crate) component: OpComponent,
-    pub(crate) id: OpusId,
+    pub(crate) id: OpusUuid,
 }
 
 
