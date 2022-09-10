@@ -25,8 +25,8 @@ impl FavoritesMenu {
         // Tree::new(MenuItem::new(MenuItemKind::Text, "System".to_string(), id));
         tr(MenuItem::Category(ComponentCategory::Favorites))
             /( 
-               tr(MenuItem::Text{label: "One".to_string()})
-              /tr(MenuItem::Text{label: "Two".to_string()})
+               tr(MenuItem::Text{label: "Area One".to_string()})
+              /tr(MenuItem::Text{label: "Area Two".to_string()})
             )
     }
 }
