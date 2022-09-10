@@ -23,10 +23,8 @@ impl FavoritesMenu {
     pub fn get_menu(self) -> Tree<MenuItem> {
         // let id = MenuId::new_v4();
         // Tree::new(MenuItem::new(MenuItemKind::Text, "System".to_string(), id));
-        tr(MenuItem::Category(ComponentCategory::Favorites))
-            /( 
-               tr(MenuItem::Text{label: "Area One".to_string()})
+        tr(MenuItem::Category(ComponentCategory::Favorites)) 
+              /tr(MenuItem::Text{label: "Area One".to_string()})
               /tr(MenuItem::Text{label: "Area Two".to_string()})
-            )
     }
 }
