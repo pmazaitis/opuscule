@@ -43,26 +43,26 @@ impl State {
         // menu.show_children();
         
         println!("*** Menu Status: {}",menu.get_menu_status());
-        
-        menu.next_child();
-        
-        println!("*** Menu Status: {}",menu.get_menu_status());
-        
-        menu.next_child();
-        
-        println!("*** Menu Status: {}",menu.get_menu_status());
-        
-        menu.next_child();
-        
-        println!("*** Menu Status: {}",menu.get_menu_status());
-        
-        menu.previous_child();
-        
-        println!("*** Menu Status: {}",menu.get_menu_status());
-        
-        menu.next_child();
-        
-        println!("*** Menu Status: {}",menu.get_menu_status());
+        // 
+        // menu.next_child();
+        // 
+        // println!("*** Menu Status: {}",menu.get_menu_status());
+        // 
+        // menu.next_child();
+        // 
+        // println!("*** Menu Status: {}",menu.get_menu_status());
+        // 
+        // menu.next_child();
+        // 
+        // println!("*** Menu Status: {}",menu.get_menu_status());
+        // 
+        // menu.previous_child();
+        // 
+        // println!("*** Menu Status: {}",menu.get_menu_status());
+        // 
+        // menu.next_child();
+        // 
+        // println!("*** Menu Status: {}",menu.get_menu_status());
         
         let machine = AudioState::Stopped(Stopped {});
         
@@ -88,19 +88,25 @@ impl State {
             OpUICommandType::Advance => {
                 println!("Got Advance");
                 self.menu.next_child().unwrap();
+                println!("*** Menu Status: {}",self.menu.get_menu_status());
             }
             OpUICommandType::Retreat => {
                 println!("Got Retreat");
                 self.menu.previous_child().unwrap();
+                println!("*** Menu Status: {}",self.menu.get_menu_status());
             }
             OpUICommandType::Select => {
                 println!("Got Select");
                 self.menu.select_child().unwrap();
+                println!("*** Menu Status: {}",self.menu.get_menu_status());
+                println!("{:?}", self.menu);
             }
             OpUICommandType::Escape => {
                 println!("Got Escape");
                 self.menu.escape_to_parent().unwrap();
+                println!("*** Menu Status: {}",self.menu.get_menu_status());
             }
+            // Make this argument optional for those times we just want to toggle fav status of current opus
             OpUICommandType::Favorite { slot: favid } => {
                 println!("Got Fav: {}", favid);
             }
