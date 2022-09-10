@@ -10,8 +10,6 @@
 //
 // Reorganize this
 
-
-use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use crate::common::{OpusId, ComponentCategory, OpInternalCommand, OpInternalCommandType, OpComponent};
 use crate::system::command::SystemCommandType;
@@ -65,9 +63,9 @@ struct CurrentNodeAndIndex<'i> {
   index: u32
 }
 
-impl <'i>  CurrentNodeAndIndex<'i>  {
-  
-}
+// impl <'i>  CurrentNodeAndIndex<'i>  {
+//   
+// }
 
 
 #[derive(Debug)]
@@ -139,9 +137,6 @@ impl Menu {
       let mut path_to_node = self.path.clone();
       path_to_node.truncate(self.path.len() - 1);
       let path_to_node = &path_to_node[1..];
-      
-      
-      let mut ns = self.tree.root().iter();
        
       for path_index in path_to_node.iter() {
         for (child_index, n) in menu_node.iter().enumerate() {
@@ -150,13 +145,7 @@ impl Menu {
           }
         }
       } 
-       
-      // for (m, c) in self.path.iter().tuple_windows() {
-      //     println!("{}--{}", &m, &c);
-      //     // let child_index = c;
-      //     // self.print_menu(menu_node);
-      //     let menu_node = ns.next().unwrap();
-      // } 
+
       menu_node      
     }
     
@@ -170,10 +159,8 @@ impl Menu {
       path_to_node.reverse();
       path_to_node.pop();
       
-      let mut menu_node = self.tree.root();
-      
       fn find_curr(n:&Node<MenuItem>, mut p:Vec<u32>) -> &Node<MenuItem> {
-        if p.len() == 0 {
+        if p.is_empty() {
           n
         } else {
           let i = p.pop().unwrap();
@@ -187,7 +174,7 @@ impl Menu {
             return n;
           }
         }
-        return &menu_node;
+        menu_node
       }
       
       CurrentNodeAndIndex{node: find_curr(self.tree.root(), path_to_node), index}
@@ -207,12 +194,13 @@ impl Menu {
       }
     }
     
-    pub fn add_favorite(op: OpusId) {
-      
-    }
-    pub fn remove_favorite(op: OpusId) {
-      
-    }
+    // TODO: adding favorites to the menu - have this be .update_component(c, t)?
+    // pub fn add_favorite(op: OpusId) {
+    //   
+    // }
+    // pub fn remove_favorite(op: OpusId) {
+    //   
+    // }
 }
 
 impl fmt::Display for MenuItem {
