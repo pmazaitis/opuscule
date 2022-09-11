@@ -11,7 +11,9 @@ use std::fmt;
 
 use crate::state::menu::MenuStatus;
 
-// Messages /////////////////////////////////
+/// Messages ////////////////////////////////
+
+/// UI Messages
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OpUICommand {
@@ -40,51 +42,38 @@ pub enum OpUICommandType {
     Refresh,
 }
 
-#[derive(Debug, Clone)]
-pub struct OpInternalCommand {
-    pub recipient: OpComponent,
-    pub command: OpInternalCommandType,
-}
+/// Internal commands (sent from component to component, or from menu)
 
-// #[derive(Debug, Clone)]
-// pub enum OpInternalCommandType {
-//     Pause,
-//     Play,
-//     GetCatalog,
-//     Load { id: OpusId },
-//     ClearOpus,
-//     Reload,
-//     ClearQueue,
-//     Repeat(Option<bool>),
-//     Shuffle(Option<bool>),
-//     Noop,
-// }
-
-// These are commands on the internal bus; things components can send back to the system, or things that are in menus?
 #[derive(Debug, Clone)]
-pub enum OpInternalCommandType {
+pub enum OpInternalCommand {
     Pause,
     Play,
-    Load { id: OpusId },
+    Load {id: OpusId },
     ClearOpus,
     Reload,
     ClearQueue,
     Noop,
+    Restart,
+    Shutdown
+}
+impl fmt::Display for OpInternalCommand {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            OpInternalCommand::Pause        => write!(f, "System"),
+            OpInternalCommand::Play         => write!(f, "Testing"),
+            OpInternalCommand::Load{id: _}  => write!(f, "Library"),
+            OpInternalCommand::ClearOpus    => write!(f, "Stream"),
+            OpInternalCommand::Reload       => write!(f, "Soundscape"),
+            OpInternalCommand::ClearQueue   => write!(f, "Radio"),
+            OpInternalCommand::Noop         => write!(f, "Favorites"),
+            OpInternalCommand::Restart      => write!(f, "Restart"),
+            OpInternalCommand::Shutdown     => write!(f, "Shutdown"),
+        }
+    }
 }
 
-#[derive(Debug, Clone)]
-pub struct OpComponentCommand {
-    pub command: OpComponentCommandType,
-}
 
-#[derive(Debug, Clone)]
-pub enum OpComponentCommandType {
-    CatalogUpdate,
-    Stopped,
-    Priority(OpusId),
-}
-
-// Component Structure ////////////////////////////////////////////////////
+/// Component Structure ////////////////////////////////////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ComponentCategory {
@@ -113,6 +102,8 @@ impl fmt::Display for ComponentCategory {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OpComponent {
+    Favorites,
+    System,
     Opuscule,
     NullComp,
     SineWave,
@@ -130,24 +121,6 @@ pub enum OpComponent {
     None
 }
 
-// pub fn get_component_category(opcomp: OpComponent) -> Category {
-//     match opcomp {
-//         OpComponent::Opuscule => Category::System,
-//         OpComponent::NullComp => Category::Testing,
-//         OpComponent::SineWave => Category::Testing,
-//         OpComponent::Mp3 => Category::Testing,
-//         OpComponent::Local => Category::Library,
-//         OpComponent::Subsonic => Category::Library,
-//         OpComponent::Custom => Category::Stream,
-//         OpComponent::Shoutcast => Category::Stream,
-//         OpComponent::Spotify => Category::Stream,
-//         OpComponent::Oobler => Category::Soundscape,
-//         OpComponent::Boodler => Category::Soundscape,
-//         OpComponent::FM => Category::Radio,
-//         OpComponent::WX => Category::Radio,
-//     }
-// }
-
 // Opus Structure //////////////////////
 
 
@@ -159,7 +132,7 @@ pub struct OpusId {
 
 
 
-////// Structures for returning status ////////////////////////
+/// Structures for returning status
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum OpResult {
@@ -405,7 +378,7 @@ struct OpStatusIndicators {
 }
 
 
-// Traits
+/// Traits
 
 pub trait AudioComponent {
     fn play() -> OpResult;

@@ -1,7 +1,7 @@
 
 use crate::state::menu::{MenuItem};
 use trees::{Tree, tr};
-use crate::common::ComponentCategory;
+use crate::common::{ComponentCategory, OpInternalCommand};
 use std::fmt;
 
 pub struct SystemMenu {
@@ -14,8 +14,8 @@ impl SystemMenu {
     }
     pub fn get_menu(self) -> Tree<MenuItem> {
         tr(MenuItem::Category(ComponentCategory::System))
-            /tr(MenuItem::SystemCommand(SystemCommandType::RestartServer))
-            /tr(MenuItem::SystemCommand(SystemCommandType::ShutdownServer))        
+            /tr(MenuItem::SystemCommand(OpInternalCommand::Restart))
+            /tr(MenuItem::SystemCommand(OpInternalCommand::Shutdown))        
     }
 }
 

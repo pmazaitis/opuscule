@@ -11,8 +11,7 @@
 // Reorganize this
 
 use serde::{Deserialize, Serialize};
-use crate::common::{OpusId, ComponentCategory, OpInternalCommand, OpInternalCommandType, OpComponent};
-use crate::system::command::SystemCommandType;
+use crate::common::{OpusId, ComponentCategory, OpInternalCommand, OpComponent};
 use trees::{Tree, Node};
 use std::fmt;
 
@@ -27,9 +26,10 @@ pub enum MenuError {
 pub enum MenuItem {
     Root,
     Category(ComponentCategory),
+    Component{label: String},
     Text{label: String},            
     Opus{label: String, id:OpusId},         
-    SystemCommand(SystemCommandType)  
+    SystemCommand(OpInternalCommand)  
 }
 
 
@@ -81,7 +81,7 @@ impl Menu {
     }
     
     pub fn add_component(&mut self, st: Tree<MenuItem>) {
-      // Todo: sort into categories based in componnetn's choice
+      // Todo: sort into categories based in componnent's choice
       self.tree.push_back(st);
       self.initialize_path();
     }
@@ -90,11 +90,13 @@ impl Menu {
       self.path = vec![0,0];
     }
 
+
+
     pub fn next_child(&mut self) -> Result<OpInternalCommand, MenuError> {     
       if *self.path.last().unwrap() < (self.get_current_menu_node().degree() as u32 - 1) {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal += 1;
-        Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
+        Ok(OpInternalCommand::Noop)
       } else {
         Err(MenuError::OutOfBounds)
       }
@@ -105,7 +107,7 @@ impl Menu {
       if *self.path.last().unwrap() > 0 {
         let pathfinal = self.path.last_mut().unwrap();
         *pathfinal -= 1;
-        Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
+        Ok(OpInternalCommand::Noop)
       } else {
         Err(MenuError::OutOfBounds)
       }
@@ -115,20 +117,24 @@ impl Menu {
       // check if path has at least 2 elements
       if self.path.len() > 2 {
         self.path.pop();
-        Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
+        Ok(OpInternalCommand::Noop)
       } else {
         Err(MenuError::OutOfBounds)
       }
     }
     
     pub fn select_child(&mut self) -> Result<OpInternalCommand, MenuError> {
-      // behavior changes based on what kind of menuItem it is...
-      // ...but for now just descend 
-      if !self.get_current_menu_node().has_no_child() {
-        self.path.push(0);
-        Ok(OpInternalCommand{recipient: OpComponent::None, command: OpInternalCommandType::Noop})
-      } else {
-        Err(MenuError::OutOfBounds)
+      match self.get_current_menu_node().data() {
+        MenuItem::Opus{label, id}    => Ok(OpInternalCommand::Noop),
+        MenuItem::SystemCommand(cmd) => Ok(cmd.clone()),
+        _ => {
+          if !self.get_current_menu_node().has_no_child() {
+            self.path.push(0);
+            Ok(OpInternalCommand::Noop)
+          } else {
+            Err(MenuError::OutOfBounds)
+          }
+        }
       }
     }
 
@@ -208,6 +214,7 @@ impl fmt::Display for MenuItem {
     match self {
       MenuItem::Root                    => write!(f, ""),
       MenuItem::Category(c)             => write!(f, "{}", c),
+      MenuItem::Component { label }     => write!(f, "{}", label),
       MenuItem::Text { label }          => write!(f, "{}", label),
       MenuItem::Opus { label, id: _ }   => write!(f, "{}", label),
       MenuItem::SystemCommand(sct)      => write!(f, "{}", sct)
