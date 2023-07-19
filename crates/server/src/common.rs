@@ -59,13 +59,13 @@ pub enum OpInternalCommand {
 impl fmt::Display for OpInternalCommand {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            OpInternalCommand::Pause        => write!(f, "System"),
-            OpInternalCommand::Play         => write!(f, "Testing"),
-            OpInternalCommand::Load{id: _}  => write!(f, "Library"),
-            OpInternalCommand::ClearOpus    => write!(f, "Stream"),
-            OpInternalCommand::Reload       => write!(f, "Soundscape"),
-            OpInternalCommand::ClearQueue   => write!(f, "Radio"),
-            OpInternalCommand::Noop         => write!(f, "Favorites"),
+            OpInternalCommand::Pause        => write!(f, "Pause"),
+            OpInternalCommand::Play         => write!(f, "Play"),
+            OpInternalCommand::Load{id: _}  => write!(f, "Load"),
+            OpInternalCommand::ClearOpus    => write!(f, "Clear"),
+            OpInternalCommand::Reload       => write!(f, "Reload"),
+            OpInternalCommand::ClearQueue   => write!(f, "Clear Queue"),
+            OpInternalCommand::Noop         => write!(f, "Noop"),
             OpInternalCommand::Restart      => write!(f, "Restart"),
             OpInternalCommand::Shutdown     => write!(f, "Shutdown"),
         }
@@ -133,18 +133,21 @@ pub struct OpusId {
 
 
 /// Structures for returning status
+/// 
+// OpMessage (for sending text updates, alerts, etc.)
+// OpError (for reporting error conditions)
+// OpStatus (for complete current status of the appliance)
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum OpResult {
     OpStatus,
+    OpMessage,
     OpError,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct OpStatus {
     playstate: OpPlayState,
-    // messages: Vec<OpMessage>,
-    // errors: Vec<OpError>,
     menu: MenuStatus,
     // now_playing: OpStatusMetaData,
     // volume: OpStatusVolume,
@@ -168,14 +171,6 @@ pub enum OpusType {
 pub struct OpPlayState {
     pub audio: String,
 }
-
-
-
-#[derive(Serialize, Deserialize, Debug)]
-struct OpMessage {}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct OpError {}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct OpStatusMenu {
