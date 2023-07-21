@@ -1,4 +1,4 @@
-use crate::common::{OpUICommand, OpUICommandType};
+use crate::clients::ui_client_messages::{OpUICommand, OpUICommandType};
 #[allow(unused_imports)]
 use tracing::{debug, error, info, trace, warn};
 
