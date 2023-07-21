@@ -70,8 +70,12 @@ async fn main() -> ! {
         clients::ui_client_controller::handle_ui_clients(settings.server_addr(), ui_cmds_tx, ui_state_rx);
     tokio::spawn(ui_client_controller);
 
+    
+
     // Spin up the rodio subsystem to create and manage audio streams for each component
     let (_stream, _stream_handle) = OutputStream::try_default().unwrap();
+
+
 
     // Main loop
 
