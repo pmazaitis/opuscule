@@ -24,7 +24,7 @@ use tracing::{debug, error, info, trace, warn, Level};
 use tracing_subscriber::FmtSubscriber;
 
 #[allow(unused_imports)]
-use common::OpResult;
+use clients::ui_client_messages::OpResult;
 
 #[tokio::main]
 async fn main() -> ! {

@@ -2,7 +2,9 @@ use tokio::sync::{mpsc::Sender, watch::Receiver};
 
 use tracing::{debug, error, info, trace, warn};
 
-use crate::common::{OpComponent, ComponentCategory, OpComponentError, OpStatusMetaData, AudioComponent, Playable, OpResult, OpusId};
+use crate::common::{OpComponent, ComponentCategory, OpComponentError,  AudioComponent, Playable, OpusId};
+
+use crate::clients::ui_client_messages::{OpStatusMetaData, OpResult};
 
 // This is a module to model and test the component system.
 //

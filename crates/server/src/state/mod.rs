@@ -5,7 +5,7 @@ pub mod menu;
 pub mod now_playing;
 
 // use crate::settings::Settings;
-use crate::common::{OpUICommand, OpUICommandType, OpResult, OpStatus, OpPlayState};
+use crate::clients::ui_client_messages::{OpUICommand, OpUICommandType, OpResult, OpStatus, OpPlayState};
 use menu::Menu;
 use audio::{AudioState, Stop, Pause, Play, Stopped};
 use crate::system::command::SystemMenu;
