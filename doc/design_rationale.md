@@ -11,3 +11,6 @@ Clients are only intended to be used to manipulate appliance state, not play mus
 When in doubt, make no noise.
 
 Isn't this an arbitrarily limited system? You betcha!
+
+
+Do I want the components to respond to commands on the internal bus, or to functions?
