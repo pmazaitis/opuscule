@@ -11,10 +11,6 @@ use audio::{AudioState, Stop, Pause, Play, Stopped};
 use crate::system::command::SystemMenu;
 use crate::system::favorites::FavoritesMenu;
 
-// use components::internal_testing::nullcomp::NullCompActorHandler;
-// 
-// use components::internal_testing::nullcomp::NullCompOpus;
-
 pub struct State{
     menu: Menu,
     machine: AudioState,

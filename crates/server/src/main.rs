@@ -3,10 +3,10 @@
 
 mod clients;
 mod common;
-mod components;
+// mod components;
+mod settings;
 mod state;
 mod system;
-mod settings;
 
 use settings::Settings;
 
@@ -29,27 +29,23 @@ use clients::ui_client_messages::OpResult;
 #[tokio::main]
 async fn main() -> ! {
     // --- Tracing
-    // install global collector configured based on RUST_LOG env var.
-    // tracing_subscriber::fmt::init();
-
     let subscriber = FmtSubscriber::builder()
         // all spans/events with a level higher than TRACE (e.g, debug, info, warn, etc.)
         // will be written to stdout.
         .with_max_level(Level::TRACE)
         // completes the builder.
         .finish();
-    
-    tracing::subscriber::set_global_default(subscriber)
-        .expect("setting default subscriber failed");
+
+    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
 
     // --- Settings
     let settings = match Settings::new() {
         Ok(s) => s,
-        Err(_e) => std::process::exit(-65) 
+        Err(_e) => std::process::exit(-65),
     };
 
     println!("settings: {:?}", &settings);
-    
+
     // --- Channels (move these into modules?)
     // We offer the ui_clients module the tx here, so we can get the commands it receives
     let (ui_cmds_tx, mut ui_cmds_rx) = mpsc::channel::<String>(10);
@@ -66,16 +62,15 @@ async fn main() -> ! {
     let mut op_state = State::new(settings.enabled_components());
 
     // Spin up UI server to handle user interface clients connecting over the net
-    let ui_client_controller =
-        clients::ui_client_controller::handle_ui_clients(settings.server_addr(), ui_cmds_tx, ui_state_rx);
+    let ui_client_controller = clients::ui_client_controller::handle_ui_clients(
+        settings.server_addr(),
+        ui_cmds_tx,
+        ui_state_rx,
+    );
     tokio::spawn(ui_client_controller);
-
-    
 
     // Spin up the rodio subsystem to create and manage audio streams for each component
     let (_stream, _stream_handle) = OutputStream::try_default().unwrap();
-
-
 
     // Main loop
 

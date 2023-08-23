@@ -43,6 +43,8 @@ impl fmt::Display for OpInternalCommand {
 }
 
 
+
+
 /// Component Structure ////////////////////////////////////////////////////
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -116,6 +118,15 @@ pub trait AudioComponent {
 pub trait SystemComponent {
     fn get_menu() -> Result<String, OpComponentError>;
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct MenuStatus {
+    /// representation of the current menu status
+    /// 
+    pub(crate) items: Vec<String>,
+    pub(crate) index: u32,
+}
+
 
 
 pub trait Playable {
